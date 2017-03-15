@@ -34,11 +34,12 @@ renderer.register(
     ImageContent,
     lambda plugin: format_html(
         '<figure><img src="{}" alt=""/><figcaption>{}</figcaption></figure>',
-        plugin.image.url,
+        plugin.image.thumbnail['400x400'].url,
         plugin.caption,
     ),
 )
-
+# <img src="{{ instance.image.thumbnail.400x400 }}" />
+# <img src="{{ instance.image.crop.400x400 }}" />
 
 
 
