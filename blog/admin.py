@@ -1,13 +1,15 @@
 from django.contrib import admin
 from django.urls import reverse
 
-from content_editor.admin import ContentEditor, ContentEditorInline
+from content_editor.admin import ContentEditor
+
+from contents.admin import create_inline
 
 from .models import ImageContent, RichTextContent
 from .models import BlogEntry
 
-ImageInline = ContentEditorInline.create(model=ImageContent)
-RichTextInline = ContentEditorInline.create(model=RichTextContent)
+ImageInline = create_inline(model=ImageContent)
+RichTextInline = create_inline(model=RichTextContent)
 
 
 class BlogEntryAdmin(ContentEditor):

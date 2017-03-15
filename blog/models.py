@@ -5,7 +5,7 @@ from django.utils.translation import ugettext_lazy as _
 
 from content_editor.models import create_plugin_base, Region
 
-from . import contents
+from contents.models import AbstractImageContent, AbstractRichTextContent
 
 class Category(models.Model):
 
@@ -50,9 +50,9 @@ class BlogEntry(models.Model):
 BlogEntryContent = create_plugin_base(BlogEntry)
 
 
-class ImageContent(contents.ImageContent, BlogEntryContent):
+class ImageContent(AbstractImageContent, BlogEntryContent):
     pass
 
 
-class RichTextContent(contents.RichTextContent, BlogEntryContent):
+class RichTextContent(AbstractRichTextContent, BlogEntryContent):
     pass

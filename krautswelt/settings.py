@@ -36,6 +36,7 @@ MEDIA_URL = '/media/'
 
 
 INSTALLED_APPS = [
+    'contents.apps.ContentsConfig',
     'blog.apps.BlogConfig',
     'content_editor',
     'versatileimagefield',

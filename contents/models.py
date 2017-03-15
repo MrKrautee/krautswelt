@@ -8,7 +8,7 @@ from ckeditor.fields import RichTextField
 from versatileimagefield.fields import PPOIField, VersatileImageField
 
 
-class ImageContent(models.Model):
+class AbstractImageContent(models.Model):
 
     """
     Image plugin
@@ -44,7 +44,7 @@ class ImageContent(models.Model):
         return self.image.name
 
 
-class RichTextContent(models.Model):
+class AbstractRichTextContent(models.Model):
 
     text = RichTextField(_('text'), config_name='richtext-content')
 
