@@ -1,0 +1,7 @@
+Django
+django-debug-toolbar
+Pillow
+feincms3
+django-ckeditor
+feincms_cleanse
+django-versatileimagefield
