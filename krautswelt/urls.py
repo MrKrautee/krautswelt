@@ -28,7 +28,7 @@ from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 from blog.views import  entry_detail
 
 media_urls = static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
-# static_urls = static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+static_urls = static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
 urlpatterns = [
     url(r'^(?P<slug>[-\w]+)/$', entry_detail,
         name='entry-detail'),
@@ -36,7 +36,8 @@ urlpatterns = [
 ]
 
 urlpatterns +=media_urls
-urlpatterns +=staticfiles_urlpatterns()
+urlpatterns +=static_urls
+# urlpatterns +=staticfiles_urlpatterns()
 
 if settings.DEBUG:
     import debug_toolbar
