@@ -20,17 +20,27 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # See https://docs.djangoproject.com/en/1.10/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'rmv(=o8eqcx19l*^9prdc7y51z-w@yb28ky4wkk&v1$wpx=m3z'
+SECRET_KEY = '&&031vbll89z03)+lj8s*%9ea)7-5&lh2hlx#zmfrk7#effp*r'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
+# needed for debug_toolbar
+INTERNAL_IPS = ('127.0.0.1',)
+
 
 ALLOWED_HOSTS = []
 
-
+MEDIA_ROOT = '%s/media' % BASE_DIR
+MEDIA_URL = '/media/'
 # Application definition
 
+
 INSTALLED_APPS = [
+    'blog.apps.BlogConfig',
+    'content_editor',
+    'versatileimagefield',
+    'ckeditor',
+    'debug_toolbar.apps.DebugToolbarConfig',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -38,8 +48,22 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 ]
-
+DEBUG_TOOLBAR_PANELS = [
+    'debug_toolbar.panels.versions.VersionsPanel',
+    'debug_toolbar.panels.timer.TimerPanel',
+    'debug_toolbar.panels.settings.SettingsPanel',
+    'debug_toolbar.panels.headers.HeadersPanel',
+    'debug_toolbar.panels.request.RequestPanel',
+    'debug_toolbar.panels.sql.SQLPanel',
+    'debug_toolbar.panels.staticfiles.StaticFilesPanel',
+    'debug_toolbar.panels.templates.TemplatesPanel',
+    'debug_toolbar.panels.cache.CachePanel',
+    'debug_toolbar.panels.signals.SignalsPanel',
+    'debug_toolbar.panels.logging.LoggingPanel',
+    'debug_toolbar.panels.redirects.RedirectsPanel',
+]
 MIDDLEWARE = [
+    'debug_toolbar.middleware.DebugToolbarMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -118,3 +142,5 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/1.10/howto/static-files/
 
 STATIC_URL = '/static/'
+STATIC_ROOT = '%s/static/' % BASE_DIR
+print(STATIC_ROOT)

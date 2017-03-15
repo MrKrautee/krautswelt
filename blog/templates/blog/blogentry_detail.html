@@ -1,0 +1,17 @@
+{% load i18n %}
+<html>
+    <head>
+        <link rel="stylesheet" href="/static/bootstrap/css/bootstrap.css">
+    </head>
+    <body bgcolor="white">
+        <div class="row">
+            <div class="col-sm-8"><h1>{{object.title }}</h1></div>
+            <div class="col-sm-4">{{object.pub_date}}</div>
+        
+        </div>
+        
+        <div id='content'>
+            {{contents.main}}
+        </div>
+    </body>
+</html>
