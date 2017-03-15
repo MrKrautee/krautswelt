@@ -5,13 +5,7 @@ from django.utils.translation import ugettext_lazy as _
 
 from content_editor.models import create_plugin_base, Region
 
-from ckeditor.fields import RichTextField
-
-from versatileimagefield.fields import PPOIField, VersatileImageField
-#from feincms3.plugins import Image
-#from feincms3.plugins import RichText
-
-
+from . import contents
 
 class Category(models.Model):
 
@@ -28,9 +22,6 @@ class BlogEntryManager(models.Manager):
        qs = self.get_queryset().filter(is_active=True)
        qs = qs.filter(pub_date__lte=datetime.datetime.now())
        return qs
-
-
-
 
 
 class BlogEntry(models.Model):
@@ -59,43 +50,9 @@ class BlogEntry(models.Model):
 BlogEntryContent = create_plugin_base(BlogEntry)
 
 
-class ImageContent(BlogEntryContent):
-
-    """
-    Image plugin
-    """
-    image = VersatileImageField(
-        _('image'),
-        upload_to='images/%Y/%m',
-        width_field='width',
-        height_field='height',
-        ppoi_field='ppoi',
-    )
-    width = models.PositiveIntegerField(
-        _('image width'),
-        blank=True,
-        null=True,
-        editable=False,
-    )
-    height = models.PositiveIntegerField(
-        _('image height'),
-        blank=True,
-        null=True,
-        editable=False,
-    )
-    ppoi = PPOIField(_('primary point of interest'))
-    caption = models.CharField( _('caption'), max_length=200, blank=True)
-
-    class Meta:
-        # abstract = True
-        verbose_name = _('image')
-        verbose_name_plural = _('images')
-
-    def __str__(self):
-        return self.image.name
+class ImageContent(contents.ImageContent, BlogEntryContent):
+    pass
 
 
-
-
-class RichTextContent(BlogEntryContent):
-    text = RichTextField()
+class RichTextContent(contents.RichTextContent, BlogEntryContent):
+    pass

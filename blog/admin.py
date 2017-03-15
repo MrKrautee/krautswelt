@@ -1,4 +1,5 @@
 from django.contrib import admin
+from django.urls import reverse
 
 from content_editor.admin import ContentEditor, ContentEditorInline
 
@@ -17,8 +18,20 @@ class BlogEntryAdmin(ContentEditor):
     prepopulated_fields = {"slug": ("title",)}
     # fields =
     # fielfsets =
+    view_on_site = True
     search_fields = ('title', )
     list_filter = ('pub_date', 'create_date')
     ordering = ('title', 'pub_date', 'create_date')
 
+    def view_on_site(self, obj):
+        url = reverse('entry-detail', kwargs={'slug': obj.slug})
+        return url
+
+
+
+
+
+
+
+    
 admin.site.register(BlogEntry, BlogEntryAdmin)
