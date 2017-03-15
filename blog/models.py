@@ -5,14 +5,11 @@ from django.utils.translation import ugettext_lazy as _
 
 from content_editor.models import create_plugin_base, Region
 
+from ckeditor.fields import RichTextField
+
+from versatileimagefield.fields import PPOIField, VersatileImageField
 #from feincms3.plugins import Image
 #from feincms3.plugins import RichText
-
-class Image(object):
-    pass
-
-class RichText(object):
-    pass
 
 
 
@@ -62,10 +59,43 @@ class BlogEntry(models.Model):
 BlogEntryContent = create_plugin_base(BlogEntry)
 
 
-class ImageContent(Image, BlogEntryContent):
+class ImageContent(BlogEntryContent):
 
+    """
+    Image plugin
+    """
+    image = VersatileImageField(
+        _('image'),
+        upload_to='images/%Y/%m',
+        width_field='width',
+        height_field='height',
+        ppoi_field='ppoi',
+    )
+    width = models.PositiveIntegerField(
+        _('image width'),
+        blank=True,
+        null=True,
+        editable=False,
+    )
+    height = models.PositiveIntegerField(
+        _('image height'),
+        blank=True,
+        null=True,
+        editable=False,
+    )
+    ppoi = PPOIField(_('primary point of interest'))
     caption = models.CharField( _('caption'), max_length=200, blank=True)
 
+    class Meta:
+        # abstract = True
+        verbose_name = _('image')
+        verbose_name_plural = _('images')
 
-class RichTextContent(RichText, BlogEntryContent):
-    pass
+    def __str__(self):
+        return self.image.name
+
+
+
+
+class RichTextContent(BlogEntryContent):
+    text = RichTextField()

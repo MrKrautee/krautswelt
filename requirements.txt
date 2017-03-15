@@ -1,6 +1,7 @@
 Django
 django-debug-toolbar
 Pillow
+django-ckeditor
 django-content-editor
 django-versatileimagefield
 --upgrade pip
