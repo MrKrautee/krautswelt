@@ -2,6 +2,9 @@ import datetime
 
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
+from django.utils.html import format_html, mark_safe
+from django.shortcuts import render
+from django.template.loader import render_to_string
 
 from content_editor.models import create_plugin_base, Region
 
@@ -51,8 +54,23 @@ BlogEntryContent = create_plugin_base(BlogEntry)
 
 
 class ImageContent(AbstractImageContent, BlogEntryContent):
-    pass
+
+    def render(self, request, **kwargs):
+        # context = kwargs['context']
+        context = { }
+        context.update({'image_content': self, })
+        # kwargs['context'] = context
+        return render_to_string('blog/content/image.html', context=context,
+                                request=request)
+        return format_html(
+        '<figure><img src="{}" alt=""/><figcaption>{}</figcaption></figure>',
+        self.image.thumbnail['400x400'].url,
+        self.caption,
+    )
 
 
 class RichTextContent(AbstractRichTextContent, BlogEntryContent):
+    
+    def render(self, request, **kwargs):
+        return mark_safe(self.text)
     pass

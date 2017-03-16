@@ -30,14 +30,15 @@ renderer.register(
     RichTextContent,
     lambda plugin: mark_safe(plugin.text),
 )
-renderer.register(
-    ImageContent,
-    lambda plugin: format_html(
-        '<figure><img src="{}" alt=""/><figcaption>{}</figcaption></figure>',
-        plugin.image.thumbnail['400x400'].url,
-        plugin.caption,
-    ),
-)
+#renderer.register(
+#    ImageContent,
+#    lambda plugin: format_html(
+#        '<figure><img src="{}" alt=""/><figcaption>{}</figcaption></figure>',
+#        plugin.image.thumbnail['400x400'].url,
+#        plugin.caption,
+#    ),
+#)
+renderer.register( ImageContent, lambda content: content.render())
 # <img src="{{ instance.image.thumbnail.400x400 }}" />
 # <img src="{{ instance.image.crop.400x400 }}" />
 
@@ -48,11 +49,16 @@ def entry_detail(request, slug):
 
 
     contents = contents_for_item(entry, [RichTextContent, ImageContent])
+    main_contents = contents['main']
+    print(contents)
     return render(request, 'blog/blogentry_detail.html', {
         'object': entry,
         'contents': {
-            region.key: renderer.render(contents[region.key])
-            for region in entry.regions
+            #'main': c.render(request) for c in main_contents
+            'main': c.render(request) for c in contents['main']
+            # region.key: renderer.render(contents[region.key])
+            # region.key: (c.render() for c in contents[region.key]) 
+            # for region in entry.regions
         },
     })
     return render(request, 'blog/entry.html', {'entry': entry})
