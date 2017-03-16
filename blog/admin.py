@@ -6,16 +6,24 @@ from content_editor.admin import ContentEditor
 from contents.admin import create_inline
 
 from .models import ImageContent, RichTextContent
-from .models import BlogEntry
+from .models import BlogEntry, Category
 
 ImageInline = create_inline(model=ImageContent)
 RichTextInline = create_inline(model=RichTextContent)
 
 
+class CategoryAdmin(admin.ModelAdmin):
+    prepopulated_fields = {"slug": ("name",)}
+    list_display = ('name', 'slug', )
+    search_fields = ('name', 'slug', )
+    ordering = ('name', 'slug', )
+
+
+
 class BlogEntryAdmin(ContentEditor):
 
-    inlines = [ ImageInline, RichTextInline]
-    readonly_fields = ('create_date', 'last_change')
+    inlines = [ ImageInline, RichTextInline, ]
+    readonly_fields = ('create_date', )
     list_display = ('title', 'pub_date', 'create_date')
     prepopulated_fields = {"slug": ("title",)}
     # fields =
@@ -35,5 +43,5 @@ class BlogEntryAdmin(ContentEditor):
 
 
 
-    
+admin.site.register(Category, CategoryAdmin)
 admin.site.register(BlogEntry, BlogEntryAdmin)

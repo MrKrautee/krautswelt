@@ -13,6 +13,10 @@ from contents.models import AbstractImageContent, AbstractRichTextContent
 class Category(models.Model):
 
     name = models.CharField(max_length=100)
+    slug = models.SlugField(_('slug'), max_length=100, unique=True)
+
+    def __str__(self):
+        return self.name
 
 
 class BlogEntryManager(models.Manager):
@@ -30,12 +34,10 @@ class BlogEntryManager(models.Manager):
 class BlogEntry(models.Model):
 
     title = models.CharField(_('title'), max_length=255)
-    slug = models.SlugField(_('slug'), max_length=100)
+    slug = models.SlugField(_('slug'), max_length=100, unique=True)
     pub_date = models.DateTimeField(_('publication date'))
     create_date = models.DateTimeField(_('creation date'), auto_now_add=True,
                                        editable=False)
-    last_change = models.DateTimeField(_('last change date'), auto_now=True,
-                                   editable=False)
     is_featured = models.BooleanField(_('is featured'), default=False)
     is_active = models.BooleanField(_('is active'), default=False)
 
