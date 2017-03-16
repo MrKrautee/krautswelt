@@ -61,3 +61,5 @@ media/
 
 venv_bootcamp/
 staticfiles
+tags
+.directory

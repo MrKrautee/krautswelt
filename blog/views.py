@@ -46,20 +46,28 @@ renderer.register( ImageContent, lambda content: content.render())
 
 def entry_detail(request, slug):
     entry = get_object_or_404(BlogEntry, slug=slug)
-
-
     contents = contents_for_item(entry, [RichTextContent, ImageContent])
     main_contents = contents['main']
-    print(contents)
+
+    print(contents.render)
+
+    html_contents = { }
+    for region in entry.regions:
+        html_contents[region.key] = mark_safe('')
+        for content in contents[region.key]:
+            html = content.render(request)
+            html_contents[region.key] += html
+
     return render(request, 'blog/blogentry_detail.html', {
         'object': entry,
-        'contents': {
-            #'main': c.render(request) for c in main_contents
-            'main': c.render(request) for c in contents['main']
-            # region.key: renderer.render(contents[region.key])
-            # region.key: (c.render() for c in contents[region.key]) 
-            # for region in entry.regions
-        },
+        'contents': html_contents
+        # {
+        #     #'main': c.render(request) for c in main_contents
+        #     'main': c.render(request) for c in contents['main']
+        #     # region.key: renderer.render(contents[region.key])
+        #     # region.key: (c.render() for c in contents[region.key]) 
+        #     # for region in entry.regions
+        # },
     })
     return render(request, 'blog/entry.html', {'entry': entry})
 
