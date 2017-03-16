@@ -23,9 +23,9 @@ from .models import RichTextContent, ImageContent
 #        context['contents'] = contents #image_contents[0]
 #        return context
 #
-renderer = PluginRenderer()
-renderer.register(RichTextContent, lambda plugin: mark_safe(plugin.text))
-renderer.register(ImageContent, lambda content: content.render())
+#renderer = PluginRenderer()
+#renderer.register(RichTextContent, lambda plugin: mark_safe(plugin.text))
+#renderer.register(ImageContent, lambda content: content.render())
 
 
 def entry_detail(request, slug):
