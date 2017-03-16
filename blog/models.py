@@ -55,23 +55,9 @@ BlogEntryContent = create_plugin_base(BlogEntry)
 
 class ImageContent(AbstractImageContent, BlogEntryContent):
 
-    def render(self, request, **kwargs):
-        # context = kwargs['context']
-        context = { }
-        context.update({'image_content': self, })
-        # kwargs['context'] = context
-        return render_to_string('blog/content/image.html',
-                                context=context, request=request
-                                )# request=request
-        return format_html(
-        '<figure><img src="{}" alt=""/><figcaption>{}</figcaption></figure>',
-        self.image.thumbnail['400x400'].url,
-        self.caption,
-    )
+    pass
 
 
 class RichTextContent(AbstractRichTextContent, BlogEntryContent):
     
-    def render(self, request, **kwargs):
-        return mark_safe(self.text)
     pass

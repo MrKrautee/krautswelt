@@ -3,6 +3,7 @@ from django.db import models
 from django.utils.text import Truncator
 from django.utils.translation import ugettext_lazy as _
 from django.utils.html import strip_tags
+from django.utils.html import mark_safe
 
 from ckeditor.fields import RichTextField
 from versatileimagefield.fields import PPOIField, VersatileImageField
@@ -56,3 +57,6 @@ class AbstractRichTextContent(models.Model):
     def __str__(self):
         # Return the first few words of the content (with tags stripped)
         return Truncator(strip_tags(self.text)).words(10, truncate=' ...')
+
+    def html(self):
+        return mark_safe(self.text)
