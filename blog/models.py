@@ -10,6 +10,8 @@ from content_editor.models import create_plugin_base, Region
 
 from contents.models import AbstractImageContent, AbstractRichTextContent
 
+from comments.models import create_comment_class
+
 class Category(models.Model):
 
     name = models.CharField(max_length=100)
@@ -38,6 +40,8 @@ class BlogEntry(models.Model):
     pub_date = models.DateTimeField(_('publication date'))
     create_date = models.DateTimeField(_('creation date'), auto_now_add=True,
                                        editable=False)
+    # last_change = models.DateTimeField(_('last change date'), auto_now=True,
+    #                                editable=False)
     is_featured = models.BooleanField(_('is featured'), default=False)
     is_active = models.BooleanField(_('is active'), default=False)
 
@@ -73,3 +77,10 @@ class ImageContent(AbstractImageContent, BlogEntryContent):
 
 class RichTextContent(AbstractRichTextContent, BlogEntryContent):
     pass
+
+AbstractBlogEntryComment = create_comment_class(BlogEntry)
+
+class EntryComment(AbstractRichTextContent):
+    pass
+
+
