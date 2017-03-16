@@ -80,7 +80,7 @@ class RichTextContent(AbstractRichTextContent, BlogEntryContent):
 
 AbstractBlogEntryComment = create_comment_class(BlogEntry)
 
-class EntryComment(AbstractRichTextContent):
+class EntryComment(AbstractBlogEntryComment):
     pass
 
 
