@@ -1,0 +1,18 @@
+.img_r {
+    display: inline;
+    float: right;
+    margin-left: 20px;
+    margin-top: 20px;
+}
+.img_l {
+    display: inline;
+    float: left;
+    margin-right: 20px;
+    margin-top: 20px;
+}
+.img_n {
+    float: none;
+}
+.published_on{
+    font-style: italic;
+}

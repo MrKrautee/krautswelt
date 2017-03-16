@@ -50,14 +50,24 @@ class BlogEntry(models.Model):
 
     objects = BlogEntryManager()
 
+    def excerpt(self):
+        # @TODO:
+        pass
+
 BlogEntryContent = create_plugin_base(BlogEntry)
 
 
 class ImageContent(AbstractImageContent, BlogEntryContent):
 
-    pass
+    LEFT='l'
+    RIGHT = 'r'
+    NONE = 'n'
+
+    IMAGE_ALIGN_CHOICES = ((LEFT, 'left'), (RIGHT, 'right'), (NONE, 'none'))
+
+    css_float = models.CharField(_('css float'), max_length=1,
+                             choices=IMAGE_ALIGN_CHOICES, default=RIGHT)
 
 
 class RichTextContent(AbstractRichTextContent, BlogEntryContent):
-    
     pass

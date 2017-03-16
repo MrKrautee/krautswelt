@@ -30,7 +30,7 @@ from blog.views import  entry_detail
 media_urls = static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 static_urls = static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
 urlpatterns = [
-    url(r'^(?P<slug>[-\w]+)/$', entry_detail,
+    url(r'^blog/(?P<slug>[-\w]+)/$', entry_detail,
         name='entry-detail'),
     url(r'^admin/', admin.site.urls),
 ]
