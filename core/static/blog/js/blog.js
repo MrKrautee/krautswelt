@@ -35,32 +35,30 @@ $( document ).ready(function() {
   function setCSSandJS(){
     applyCSS();
     $('#comment_submit').click(function(e){
-      // collect data
-      var data = getCommentFormData();
-      $.ajax({
-        method: "POST",
-        url: "/blog/comment/form/",
-        data: data,
-        success: function(response_html) {
-        $("div#comment_form").html(response_html);
-          setCSSandJS(); },
-
+      // only send form if all errors corrected.
+      var errors_len = 0;
+      $('.form-error').each( function (){
+        errors_len = errors_len + $.trim($(this).html()).length;
       });
-    return false; // avoid to execute the actual from submit
+      if(errors_len == 0){
+        var data = getCommentFormData();
+        $.ajax({
+          method: "POST",
+          url: "/blog/comment/form/",
+          data: data,
+          success: function(response_html) {
+          $("div#comment_form").html(response_html);
+            setCSSandJS(); },
+
+        });
+      }
+    return false; // avoid to execute the actual form submit
     }); //click
+    function func_add_errors(e) {
+     return function(jdata){
 
-    $('div#comment_form input').focusout(function(e){
-      $.ajax({
-        method: "POST",
-        data: getCommentFormData(),
-        url: "/blog/comment/form/check/",
-        success: function(jdata){
-
-          $("div#comment_form").append(jdata.email);
           var error = jdata[e.target.name];
           if ( error ) {
-
-            // e.target.value=jdata[e.target.name];
             $("#"+e.target.name+"_error").html(error);
             $("#id_"+e.target.name).addClass("input-error");
 
@@ -69,7 +67,14 @@ $( document ).ready(function() {
             $("#id_"+e.target.name).removeClass("input-error");
 
           };
-        },
+        }
+    }
+    $('div#comment_form input').keyup(function(e){
+      $.ajax({
+        method: "POST",
+        data: getCommentFormData(),
+        url: "/blog/comment/form/check/",
+        success: func_add_errors(e),
       });
     });
 
@@ -78,22 +83,7 @@ $( document ).ready(function() {
         method: "POST",
         data: getCommentFormData(),
         url: "/blog/comment/form/check/",
-        success: function(jdata){
-
-          $("div#comment_form").append(jdata.email);
-          var error = jdata[e.target.name];
-          if ( error ) {
-
-            // e.target.value=jdata[e.target.name];
-            $("#"+e.target.name+"_error").html(error);
-            $("#id_"+e.target.name).addClass("input-error");
-
-          }else{
-            $("#"+e.target.name+"_error").html("");
-            $("#id_"+e.target.name).removeClass("input-error");
-
-          };
-        },
+        success: func_add_errors(e),
       });
     });
   };
