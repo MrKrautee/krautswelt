@@ -29,3 +29,13 @@ textarea#id_comment {
 #id_captcha_1 { 
 	float: right;
 }
+
+.form-error {
+    color: indianred;
+    font-size: small;
+}
+
+.input-error {
+    border: 1px solid indianred;
+    border-color: indianred;
+}

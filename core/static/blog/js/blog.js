@@ -49,6 +49,53 @@ $( document ).ready(function() {
     return false; // avoid to execute the actual from submit
     }); //click
 
+    $('div#comment_form input').focusout(function(e){
+      $.ajax({
+        method: "POST",
+        data: getCommentFormData(),
+        url: "/blog/comment/form/check/",
+        success: function(jdata){
+
+          $("div#comment_form").append(jdata.email);
+          var error = jdata[e.target.name];
+          if ( error ) {
+
+            // e.target.value=jdata[e.target.name];
+            $("#"+e.target.name+"_error").html(error);
+            $("#id_"+e.target.name).addClass("input-error");
+
+          }else{
+            $("#"+e.target.name+"_error").html("");
+            $("#id_"+e.target.name).removeClass("input-error");
+
+          };
+        },
+      });
+    });
+
+    $('div#comment_form textarea').focusout(function(e){
+      $.ajax({
+        method: "POST",
+        data: getCommentFormData(),
+        url: "/blog/comment/form/check/",
+        success: function(jdata){
+
+          $("div#comment_form").append(jdata.email);
+          var error = jdata[e.target.name];
+          if ( error ) {
+
+            // e.target.value=jdata[e.target.name];
+            $("#"+e.target.name+"_error").html(error);
+            $("#id_"+e.target.name).addClass("input-error");
+
+          }else{
+            $("#"+e.target.name+"_error").html("");
+            $("#id_"+e.target.name).removeClass("input-error");
+
+          };
+        },
+      });
+    });
   };
 
   // using jQuery

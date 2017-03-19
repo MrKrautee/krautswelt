@@ -2,6 +2,7 @@ from django.shortcuts import render
 from django.shortcuts import get_object_or_404
 from django.forms import ModelForm 
 from django.forms import HiddenInput, Textarea, TextInput
+from django.http import JsonResponse
 
 from contents.views import render_content_to_string
 from captcha.fields import CaptchaField, CaptchaTextInput
@@ -29,6 +30,12 @@ class CaptchaCommentForm(CommentForm):
                    HiddenInput(), 
                   }
 
+
+def comment_form_check(request):
+    if request.method == "POST" and request.is_ajax():
+        form = CommentForm(request.POST)
+        print(form.errors.as_json())
+        return JsonResponse(form.errors)
 
 def comment_form(request):
     print("DRINNNNNNNNNN")
