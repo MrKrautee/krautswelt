@@ -33,19 +33,17 @@ class CaptchaCommentForm(CommentForm):
 def comment_form(request):
     print("DRINNNNNNNNNN")
     form = CommentForm()
-    if request.POST:
+    if request.POST and 'entry_id' in request.POST.keys():
         if request.is_ajax():
-            print("AJAX")
-            # name = request.POST.get('name')
-            # email = request.POST.get('email')
-            # comment = request.POST.get('comment')
-            # website = request.POST.get('website')
             entry_id = request.POST.get('entry_id')
             form = CommentForm(request.POST)
+            if form.is_valid():
+                c = form.save(commit=False)
+                c.parent = BlogEntry.objects.get(id=entry_id)
+                c.save()
+                return render(request, 'blog/comments/comment_form_success.html')
             return render(request, 'blog/comments/comment_form.html',
                           {'comment_form': form, })
-            print(name)
-            pass
     return render(request, 'blog/comments/comment_form.html',
                   {'comment_form': form, })
 
