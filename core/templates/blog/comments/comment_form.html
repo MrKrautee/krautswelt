@@ -1,0 +1,37 @@
+<link rel="stylesheet/css" href="/static/blog/css/blog.css">
+        <h4>comment this article</h4>
+        <form  method="POST"  >{% csrf_token %}
+         <div class="comment_form row">
+            <div class="col-sm-3">
+                {{comment_form.name.errors}} {{ comment_form.name }}
+            <small id="email_help" class="form-text text-muted">Your name will
+                be shown as comment author.</small>
+            </div>
+            <div class="col-sm-3 form-group">
+            {{comment_form.email.errors}} {{ comment_form.email }}
+             <small id="email_help" class="form-text text-muted">Your email
+                 will be never shared with anyone else.</small>
+            </div>
+            <div class="col-sm-3 form-group">
+                {{comment_form.website.errors}}{{ comment_form.website }}
+                <small id="website_help" class="form-text text-muted">Your website will
+                    be shown.</small>
+            </div>
+        </div>
+        <div class="comment_form row">
+            <div class="col-sm-9 form-group">
+                {{comment_form.comment.errors}} 
+                {{ comment_form.comment }}
+            </div>
+        </div>
+        <div class="comment_form row">
+            <div class="col-sm-9 form-group">
+                {{comment_form.captcha}} 
+            </div>
+        </div>
+        <div class="comment_form row">
+            <div class="col-sm-3 ">
+                <input type="submit"  id="comment_submit">
+            </div>
+        </div>
+        </form>

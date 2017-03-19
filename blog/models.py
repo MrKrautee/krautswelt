@@ -10,7 +10,6 @@ from content_editor.models import create_plugin_base, Region
 
 from contents.models import AbstractImageContent, AbstractRichTextContent
 
-from comments.models import create_comment_class
 
 class Category(models.Model):
 
@@ -78,9 +77,22 @@ class ImageContent(AbstractImageContent, BlogEntryContent):
 class RichTextContent(AbstractRichTextContent, BlogEntryContent):
     pass
 
-AbstractBlogEntryComment = create_comment_class(BlogEntry)
 
-class EntryComment(AbstractBlogEntryComment):
-    pass
 
+class Comment(models.Model):
+
+    parent = models.ForeignKey(BlogEntry)
+
+    name = models.CharField(_('name'), max_length=100)
+    email = models.EmailField(_('email'))
+    website = models.URLField(_('website'), blank=True)
+    comment = models.TextField(_('comment'))
+    date = models.DateTimeField(_('date'), auto_now_add=True,
+                                editable=False)
+
+    is_active = models.BooleanField(_('id active'), default=False)
+    notify_new_comment = models.BooleanField(_('notify me for new comments'),
+                                             default=False)
+    notify_new_entry = models.BooleanField(_('notify me for new blog entries'),
+                                             default=False)
 

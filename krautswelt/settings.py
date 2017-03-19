@@ -37,7 +37,7 @@ MEDIA_URL = '/media/'
 
 INSTALLED_APPS = [
     'core.apps.CoreConfig',
-    'comments.apps.CommentsConfig',
+    'captcha',
     'contents.apps.ContentsConfig',
     'blog.apps.BlogConfig',
     'content_editor',

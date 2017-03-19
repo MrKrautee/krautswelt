@@ -1,12 +1,31 @@
 {% extends "base.html" %}
 {% block head %}
-<link rel="stylesheet" href="/static/blog/css/blog.css">
+
+<link rel="stylesheet/css" href="/static/blog/css/blog.css">
+
 {% endblock head %}
-{% block content %}
-        <div class="row"><h3>{{object.title }}</h3></div>
+    {% block content %}
+            <div class="row"><h3>{{object.title }}</h3></div>
         <div class="row"><p class="text-muted small text-italic">{{object.pub_date}}</p></div>
         <div class="row"> </div>
-        <div id='content' class="row">
+        <div id='content' class="">
             {{contents.main}}
         </div>
+        <div id="comments" class="">
+            <div id="comment_form">
+                {#% include "blog/comments/comment_form.html" %#}
+            </div>
+            <button type="button" id="btn-write-comment" class="btn btn-primary" data-toggle="button"
+                                                          aria-pressed="false"
+                                                          autocomplete="off">
+             write comment
+            </button>
+            <div id="comment_list_c">
+                {% include "blog/comments/comment_list.html" %}
+            </div>
+        </div> <!-- #comments -->
+
+
+    <script src="/static/blog/js/blog.js" id="context-data" data="{{object.id}}"></script>
+
 {% endblock %}

@@ -16,3 +16,16 @@
 .text-italic {
     font-style: italic;
 }
+
+img.captcha { 
+	float: left;
+	display: inline;
+}
+
+textarea#id_comment {
+	height: inherit;
+}
+
+#id_captcha_1 { 
+	float: right;
+}
