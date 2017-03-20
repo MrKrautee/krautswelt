@@ -4,8 +4,7 @@
          <div class="comment_form row">
             <div class="col-sm-3">
                 <div id="{{ comment_form.name.name }}_error"
-                    class="form-error">{% for error in comment_form.name.errors %}
-                    {{ error|escape }}{% endfor %}</div> 
+                    class="form-error">{{ comment_form.name.errors }}</div> 
                 {{ comment_form.name }}
             <small id="email_help" class="form-text text-muted">Your name will
                 be shown as comment author.</small>

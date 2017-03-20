@@ -30,62 +30,79 @@ $( document ).ready(function() {
     $("textarea#id_comment").attr('placeholder', 'your comment ... *');
     $("textarea#id_comment").attr('rows', '3');
     $("img.captcha").attr('class', 'thumbnail');
-  };
-
-  function setCSSandJS(){
-    applyCSS();
-    $('#comment_submit').click(function(e){
-      // only send form if all errors corrected.
-      var errors_len = 0;
-      $('.form-error').each( function (){
-        errors_len = errors_len + $.trim($(this).html()).length;
-      });
-      if(errors_len == 0){
-        var data = getCommentFormData();
-        $.ajax({
-          method: "POST",
-          url: "/blog/comment/form/",
-          data: data,
-          success: function(response_html) {
-          $("div#comment_form").html(response_html);
-            setCSSandJS(); },
-
-        });
-      }
-    return false; // avoid to execute the actual form submit
-    }); //click
-    function func_add_errors(e) {
+        function func_add_errors(e) {
      return function(jdata){
 
           var error = jdata[e.target.name];
           if ( error ) {
+              console.log("ERROR "+e.target.name);
             $("#"+e.target.name+"_error").html(error);
             $("#id_"+e.target.name).addClass("input-error");
 
           }else{
+              console.log("NO "+e.target.name);
             $("#"+e.target.name+"_error").html("");
             $("#id_"+e.target.name).removeClass("input-error");
 
           };
         }
     }
-    $('div#comment_form input').keyup(function(e){
-      $.ajax({
-        method: "POST",
-        data: getCommentFormData(),
-        url: "/blog/comment/form/check/",
-        success: func_add_errors(e),
-      });
-    });
+    function func_check_form(e) {
+        return function(e){
+            $.ajax({
+                method: "POST",
+                data: getCommentFormData(),
+                url: "/blog/comment/form/check/",
+                success: func_add_errors(e),
+            });
+        }(e);
+    }
+    $('div#comment_form input').keyup(func_check_form);
+    $('div#comment_form input').focusout(func_check_form);
+    $('div#comment_form textarea').focusout(func_check_form);
+    $('div#comment_form textarea').keyup(func_check_form); 
+  };
 
-    $('div#comment_form textarea').focusout(function(e){
-      $.ajax({
-        method: "POST",
-        data: getCommentFormData(),
-        url: "/blog/comment/form/check/",
-        success: func_add_errors(e),
-      });
-    });
+  function setCSSandJS(){
+    applyCSS();
+  
+    
+    $('#comment_submit').click(function(e){
+      // only send form if all errors corrected.
+        $("div#comment_form input").keyup();
+        $("div#comment_form textarea").keyup();
+        //wait till changes made
+        sleep(5);
+
+            var errors_len = 0;
+            $('.form-error').each( function (){
+                var l =  $.trim($(this).html()).length;
+                errors_len = errors_len + l;
+            });
+            if(errors_len == 0){
+                var data = getCommentFormData();
+                $.ajax({
+                method: "POST",
+                url: "/blog/comment/form/",
+                data: data,
+                success: function(response_html) {
+                $("div#comment_form").html(response_html);
+                    setCSSandJS(); },
+        
+                });
+            }
+       
+    return false; // avoid to execute the actual form submit
+    }); //click
+     
+//     $('div#comment_form textarea').focusout(function(e){
+//       $.ajax({
+//         method: "POST",
+//         data: getCommentFormData(),
+//         url: "/blog/comment/form/check/",
+//         success: func_add_errors(e),
+//       });
+//     });
   };
 
   // using jQuery
@@ -104,7 +121,7 @@ $( document ).ready(function() {
       }
       return cookieValue;
   }
-
+// add comment form on button click
   $('#btn-write-comment').click(function(e){
 
     var comment_from_div = $("div#comment_form");
@@ -117,15 +134,20 @@ $( document ).ready(function() {
         success: function(response_html) {
           $("div#comment_form").html(response_html);
           setCSSandJS();
+     
         }, // success
       }); //ajax
+
     }else{ // hide form if it already exists
       comment_from_div.hide();
        $("button#btn-write-comment").click(function(){
-           $("div#comment_form").toggle();
+ $("div#comment_form").toggle();
+
+
        });
     };
 
   });
+       
 
 }); // ready
