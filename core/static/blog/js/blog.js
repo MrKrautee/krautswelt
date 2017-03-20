@@ -35,12 +35,10 @@ $( document ).ready(function() {
 
           var error = jdata[e.target.name];
           if ( error ) {
-              console.log("ERROR "+e.target.name);
             $("#"+e.target.name+"_error").html(error);
             $("#id_"+e.target.name).addClass("input-error");
 
           }else{
-              console.log("NO "+e.target.name);
             $("#"+e.target.name+"_error").html("");
             $("#id_"+e.target.name).removeClass("input-error");
 
