@@ -28,6 +28,7 @@ DEBUG = True
 INTERNAL_IPS = ('127.0.0.1',)
 
 
+#ALLOWED_HOSTS = ['192.168.178.80', ]
 ALLOWED_HOSTS = []
 
 MEDIA_ROOT = '%s/media' % BASE_DIR
