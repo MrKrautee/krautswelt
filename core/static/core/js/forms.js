@@ -1,34 +1,8 @@
-$( document ).ready(function() {
-  var form_selector = "div#comment_form form";
-  var validation_url = "/blog/comment/form/check/";
-  /**
-   * collect form data
-   */
-  function getCommentFormData(){
-    // collect data
-    var parent = $(form_selector+' input#id_parent').val();
-    var name = $(form_selector+' input#id_name').val();
-    var email = $(form_selector+' input#id_email').val();
-    var website = $(form_selector+' input#id_website').val();
-    var comment = $(form_selector+" textarea#id_comment").val();
-    var entry_id = $("#context-data").attr('data');
-    var csrftoken = getCookie('csrftoken');
-    var data = {
-      name: name,
-      email: email,
-      comment: comment,
-      website: website,
-      parent: parent,
-      csrfmiddlewaretoken: csrftoken,
-    }
-    return data;
-  }
-
-  function onSuccess(){
-    $('div#comments .alert').fadeIn('slow');
-    $('div#comments div#comment_form_panel').fadeOut('slow');
-
-  }
+function makeAjaxValidationForm(form_selector, url, func_data, func_onSuccess){  
+  var form_selector = form_selector;
+  var validation_url = url;
+  var getCommentFormData = func_data;
+  var onSuccess = func_onSuccess;
   /** 
    * check a singel input field.
    * @input_element (dom element) ie: $('input#id_website')
@@ -64,7 +38,6 @@ $( document ).ready(function() {
       },
     });
   }
-
   /**
    * adds/ removes errors to html error div.
    * @param: {DOM el} input_element ie: $('input#id_email').
@@ -73,12 +46,11 @@ $( document ).ready(function() {
   function showInputErrors(element_name, json_response){
     // var element_name = input_element.name;
     var error = json_response[element_name];
-    if ( error ) {
+    if(error){
       $(form_selector+" #"+element_name+"_help").hide();
       $(form_selector+" #"+element_name+"_errors").html(error);
       $(form_selector+" #id_"+element_name).parent().addClass("has-error");;
       $(form_selector+" #id_"+element_name).next().addClass("glyphicon-remove");
-
     }else{
       $(form_selector+" #"+element_name+"_help").show();
       $(form_selector+" #"+element_name+"_errors").html("");
@@ -88,7 +60,6 @@ $( document ).ready(function() {
       $(form_selector+" #id_"+element_name).next().addClass("glyphicon-ok");
     }
   }
-
   /* *** MAIN *** */
   var func_check = function(e){ return checkInput(e.target);};
   $(form_selector+" :input").each(function(){
@@ -102,5 +73,4 @@ $( document ).ready(function() {
     return false; // avoid to execute the actual form submit
   }); //click
 
-
-}); // ready
+}

@@ -1,37 +1,66 @@
 <div id="comment_form" class="">
-	<form  method="POST">{% csrf_token %}
-		{% for field in comment_form %}
-		<div class="form-group has-feedback">
-			{{ field }}
-			<span class="glyphicon form-control-feedback" aria-hidden="true"></span>
-			<div id="{{ field.name }}_help" class="help-block text-muted">
-				{{ field.help_text }}
-			</div>
-			<div id="{{ field.name }}_errors" class="help-block form-errors">
-				{{ field.errors }}
-			</div> 
-		</div> {% endfor %}
-		<div class="form-group">
-			<button type="submit" id="comment_submit" class="btn btn-default">submit</button>
-		</div>
-	</form>
+    <form  method="POST">{% csrf_token %}
+        {% for field in comment_form %}
+        <div class="form-group has-feedback">
+            {{ field }}
+            <span class="glyphicon form-control-feedback" aria-hidden="true"></span>
+            <div id="{{ field.name }}_help" class="help-block text-muted">
+                {{ field.help_text }}
+            </div>
+            <div id="{{ field.name }}_errors" class="help-block form-errors">
+                {{ field.errors }}
+            </div>
+        </div> {% endfor %}
+        <div class="form-group">
+            <button type="submit" id="comment_submit" class="btn btn-default">submit</button>
+        </div>
+    </form>
 </div>
 <script>
 $( document ).ready(function() {
-	var form_selector = "div#comment_form form";
-	$(form_selector+" input#id_name").attr('placeholder', 'name *');
-	$(form_selector+" div#name_help").html('Your name will be published.');
-	$(form_selector+" input#id_email").attr('placeholder', 'e-mail *');
-	$(form_selector+" div#email_help").html('Your email will never shown to anyone else.');
-	$(form_selector+" input#id_website").attr('placeholder', 'http://website');
-	$(form_selector+" textarea#id_comment").attr('placeholder', 'your comment ... *');
-	$(form_selector+" textarea#id_comment").attr('rows', '3');
-	$(form_selector+" input#id_captcha_1").prop('required',true);
-	$(form_selector+" img.captcha").attr('class', 'thumbnail');
-	$(form_selector+" :input").each(function(){
-		if($(this).attr("type") != "submit" && $(this).attr("type") != "hidden"){
-			$(this).addClass("form-control");
-		}
-	});
+    var form_selector = "div#comment_form form";
+    $(form_selector+" input#id_name").attr('placeholder', 'name *');
+    $(form_selector+" div#name_help").html('Your name will be published.');
+    $(form_selector+" input#id_email").attr('placeholder', 'e-mail *');
+    $(form_selector+" div#email_help").html('Your email will never shown to anyone else.');
+    $(form_selector+" input#id_website").attr('placeholder', 'http://website');
+    $(form_selector+" textarea#id_comment").attr('placeholder', 'your comment ... *');
+    $(form_selector+" textarea#id_comment").attr('rows', '3');
+    $(form_selector+" input#id_captcha_1").prop('required',true);
+    $(form_selector+" img.captcha").attr('class', 'thumbnail');
+    $(form_selector+" :input").each(function(){
+        if($(this).attr("type") != "submit" && $(this).attr("type") != "hidden"){
+            $(this).addClass("form-control");
+        }
+    });
+    /**
+     * collect form data
+     */
+    function getFormData(){
+        // collect data
+        var parent = $(form_selector+' input#id_parent').val();
+        var name = $(form_selector+' input#id_name').val();
+        var email = $(form_selector+' input#id_email').val();
+        var website = $(form_selector+' input#id_website').val();
+        var comment = $(form_selector+" textarea#id_comment").val();
+        var entry_id = $("#context-data").attr('data');
+        var csrftoken = getCookie('csrftoken');
+        var data = {
+            name: name,
+            email: email,
+            comment: comment,
+            website: website,
+            parent: parent,
+            csrfmiddlewaretoken: csrftoken,
+        }
+        return data;
+    }
+
+    function onSuccess(){
+        $('div#comments .alert').fadeIn('slow');
+        $('div#comments div#comment_form_panel').fadeOut('slow');
+
+    }
+    makeAjaxValidationForm(form_selector, "/blog/comment/form/check/", getFormData, onSuccess);
 });
 </script>

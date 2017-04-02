@@ -40,19 +40,6 @@ def comment_form_check(request):
         return JsonResponse(form.errors)
     return HttpResponseNotAllowed(('POST',))
 
-def comment_form(request):
-    if request.POST and request.is_ajax():
-        form = CommentForm(request.POST)
-        if form.is_valid():
-            c = form.save(commit=True)
-            return render(request,
-                          'blog/comments/comment_form_success.html',
-                          {'comment': c, })
-        else:
-            return render(request, 'blog/comments/comment_form.html',
-                          {'comment_form': form, })
-    return HttpResponseNotAllowed(('POST',))
-
 def entry_detail(request, slug):
     entry = get_object_or_404(BlogEntry, slug=slug)
     contents = render_content_to_string(request, entry, [RichTextContent, ImageContent])
