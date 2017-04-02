@@ -1,11 +1,7 @@
 {% for comment in comments %}
-<div class="row">
-    <div class="col-sm-3 comment_meta" id="comment_meta_{{ comment.id }}">
-        <p class="comment_author"> {{ comment.name }} </p>
-        <small class="text-muted font-italic comment_date">{{ comment.date }}</small> 
-    </div>
-    <div class="col-sm-5 comment_text" id="comment_text_{{ comment.id }}">
-        {{ comment.comment }} 
-    </div>
-</div>
-{% endfor %}
+<div class="panel panel-default">
+	<div class="panel-heading" id="comment_meta_{{ comment.id }}">{{ comment.name }} 
+		<small class="text-muted font-italic comment_date">on {{ comment.date }}</small>
+	</div>
+	<div class="panel-body" id="comment_text_{{ comment.id }}">{{ comment.comment }} </div>
+</div>{% endfor %}

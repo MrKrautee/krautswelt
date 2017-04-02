@@ -1,33 +1,31 @@
 {% extends "base.html" %}
 {% block head %}
-
 <link rel="stylesheet" href="/static/blog/css/blog.css">
-
 {% endblock head %}
-    {% block content %}
-            <div class="row"><h3>{{object.title }}</h3></div>
-        <div class="row"><p class="text-muted small text-italic">{{object.pub_date}}</p></div>
-        <div class="row"> </div>
-        <div id='content' class="">
-            {{contents.main}}
-        </div>
-        <div id="comments" class="">
-            <div id="comment_form">
-                {#% include "blog/comments/comment_form.html" %#}
-            </div>
-            <button type="button" id="btn-write-comment" class="btn btn-primary" data-toggle="button"
-                                                          aria-pressed="false"
-                                                          autocomplete="off">
-             write comment
-            </button>
-            <div id="comment_list_c">
-                {% include "blog/comments/comment_list.html" %}
-            </div>
-            
-            
-        </div> <!-- #comments -->
 
-
-    <script src="/static/blog/js/blog_refactor.js" id="context-data" data="{{object.id}}"></script>
-
+{% block content %}
+<div class="row"><h3><a href=".">{{object.title }}</a></h3></div>
+<div class="row"><p class="text-muted small text-italic">{{object.pub_date}}</p></div>
+<div class="row"> </div>
+<div id='content' class="">
+	{{contents.main}}
+</div>
+<div id="comments" class="">
+	<h3>reactions</h3>
+	<div class="panel panel-default">
+		<div class="panel-heading">
+			<span class="glyphicon glyphicon-comment"></span> 
+			<a data-toggle="collapse" data-parent="#accordion" href="#collapse1">comment this article</a>
+		</div>
+		<div id="collapse1" class="panel-collapse collapse">
+			<div class="panel-body">
+				{% include "blog/comments/comment_form.html" %}
+			</div>
+		</div>
+	</div>
+	<div id="comment_list_c">
+		{% include "blog/comments/comment_list.html" %}
+	</div>
+</div> <!-- #comments -->
+<script src="/static/blog/js/comments.js" id="context-data" data="{{object.id}}"></script>
 {% endblock %}

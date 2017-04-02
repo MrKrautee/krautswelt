@@ -77,6 +77,15 @@ class ImageContent(AbstractImageContent, BlogEntryContent):
 class RichTextContent(AbstractRichTextContent, BlogEntryContent):
     pass
 
+class CommentManager(models.Manager):
+
+    def get_comments(self, entry):
+        qs = self.get_queryset()
+        # until there is no feature to activate comments, show
+        # inactive ones, too.
+        qs_filtered = qs.filter(is_active=False, parent=entry)
+        qs_filtered = qs_filtered.order_by('-date')
+        return qs_filtered
 
 
 class Comment(models.Model):
@@ -95,4 +104,5 @@ class Comment(models.Model):
                                              default=False)
     notify_new_entry = models.BooleanField(_('notify me for new blog entries'),
                                              default=False)
+    objects = CommentManager()
 

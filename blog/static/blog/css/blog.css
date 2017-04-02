@@ -30,10 +30,7 @@ textarea#id_comment {
 	float: right;
 }
 
-.form-error {
-    color: indianred;
-    font-size: small;
-}
+
 
 .input-error {
     border: 1px solid indianred;

@@ -49,7 +49,9 @@ def comment_form(request):
                     c = form.save(commit=False)
                     c.parent = BlogEntry.objects.get(id=entry_id)
                     c.save()
-                    return render(request, 'blog/comments/comment_form_success.html')
+                    return render(request,
+                                  'blog/comments/comment_form_success.html',
+                                  {'comment': c, })
                 else:
                     return render(request, 'blog/comments/comment_form.html',
                                                       {'comment_form': form, })
@@ -61,13 +63,14 @@ def comment_form(request):
 def entry_detail(request, slug):
     entry = get_object_or_404(BlogEntry, slug=slug)
     contents = render_content_to_string(request, entry, [RichTextContent, ImageContent])
-    comments = Comment.objects.filter(parent=entry)
+    comments = Comment.objects.get_comments(entry)
     comment_form = CommentForm(initial={'parent':entry, })
 
     return render(request, 'blog/blogentry_detail.html', {
         'object': entry,
         'contents': contents,
         'comments': comments,
+        'comment_form': comment_form,
     })
 
 
