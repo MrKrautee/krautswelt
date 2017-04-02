@@ -12,7 +12,8 @@
 </div>
 <div id="comments" class="">
 	<h3>reactions</h3>
-	<div class="panel panel-default">
+	<div class="alert alert-success" style="display:none;">comment saved. thank you for commenting! after approving your comment, it will be published.</div>
+	<div id="comment_form_panel" class="panel panel-default">
 		<div class="panel-heading">
 			<span class="glyphicon glyphicon-comment"></span> 
 			<a data-toggle="collapse" data-parent="#accordion" href="#collapse1">comment this article</a>
@@ -23,7 +24,7 @@
 			</div>
 		</div>
 	</div>
-	<div id="comment_list_c">
+	<div id="comment_list">
 		{% include "blog/comments/comment_list.html" %}
 	</div>
 </div> <!-- #comments -->

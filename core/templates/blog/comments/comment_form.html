@@ -29,7 +29,7 @@ $( document ).ready(function() {
 	$(form_selector+" input#id_captcha_1").prop('required',true);
 	$(form_selector+" img.captcha").attr('class', 'thumbnail');
 	$(form_selector+" :input").each(function(){
-		if($(this).attr("type") != "submit"){
+		if($(this).attr("type") != "submit" && $(this).attr("type") != "hidden"){
 			$(this).addClass("form-control");
 		}
 	});

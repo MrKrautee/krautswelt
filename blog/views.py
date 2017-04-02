@@ -2,7 +2,8 @@ from django.shortcuts import render
 from django.shortcuts import get_object_or_404
 from django.forms import ModelForm 
 from django.forms import HiddenInput, Textarea, TextInput
-from django.http import JsonResponse, HttpResponseForbidden
+from django.http import JsonResponse, HttpResponseForbidden, HttpResponseNotAllowed
+
 
 
 from contents.views import render_content_to_string
@@ -16,11 +17,10 @@ class CommentForm(ModelForm):
 
     # captcha = CaptchaField()
 
-
     class Meta:
         model = Comment
-        fields = ['name', 'email', 'website', 'comment',]
-        # widgets = {'comment': HiddenInput(), }
+        fields = ['name', 'email', 'website', 'comment','parent']
+        widgets = {'parent': HiddenInput(), }
 
 class CaptchaCommentForm(CommentForm):
     captcha = CaptchaField(required=True)
@@ -35,30 +35,23 @@ class CaptchaCommentForm(CommentForm):
 def comment_form_check(request):
     if request.method == "POST" and request.is_ajax():
         form = CommentForm(request.POST)
+        if form.is_valid():
+            form.save()
         return JsonResponse(form.errors)
-    return HttpResponseForbidden()
+    return HttpResponseNotAllowed(('POST',))
 
 def comment_form(request):
-    form = CommentForm()
-    if request.POST:
-        if request.is_ajax():
-            if 'entry_id' in request.POST.keys():
-                entry_id = request.POST.get('entry_id')
-                form = CommentForm(request.POST)
-                if form.is_valid():
-                    c = form.save(commit=False)
-                    c.parent = BlogEntry.objects.get(id=entry_id)
-                    c.save()
-                    return render(request,
-                                  'blog/comments/comment_form_success.html',
-                                  {'comment': c, })
-                else:
-                    return render(request, 'blog/comments/comment_form.html',
-                                                      {'comment_form': form, })
-            else:
-                return render(request, 'blog/comments/comment_form.html',
-                                                      {'comment_form': form, })
-    return HttpResponseForbidden()
+    if request.POST and request.is_ajax():
+        form = CommentForm(request.POST)
+        if form.is_valid():
+            c = form.save(commit=True)
+            return render(request,
+                          'blog/comments/comment_form_success.html',
+                          {'comment': c, })
+        else:
+            return render(request, 'blog/comments/comment_form.html',
+                          {'comment_form': form, })
+    return HttpResponseNotAllowed(('POST',))
 
 def entry_detail(request, slug):
     entry = get_object_or_404(BlogEntry, slug=slug)
