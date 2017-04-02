@@ -1,5 +1,6 @@
 $( document ).ready(function() {
   var form_selector = "div#comment_form form";
+  var validation_url = "/blog/comment/form/check/";
   /**
    * collect form data
    */
@@ -22,6 +23,12 @@ $( document ).ready(function() {
     }
     return data;
   }
+
+  function onSuccess(){
+    $('div#comments .alert').fadeIn('slow');
+    $('div#comments div#comment_form_panel').fadeOut('slow');
+
+  }
   /** 
    * check a singel input field.
    * @input_element (dom element) ie: $('input#id_website')
@@ -31,7 +38,7 @@ $( document ).ready(function() {
       csrfmiddlewaretoken: getCSRF(), };
     return $.post({
       data: data,
-      url: '/blog/comment/form/check/',
+      url: validation_url,
       success: function (json_respons){
         showInputErrors(input_element.name, json_respons);
       },
@@ -44,7 +51,7 @@ $( document ).ready(function() {
     var data = getCommentFormData();
     return $.post({
       data: data,
-      url: '/blog/comment/form/check/',
+      url: validation_url,
       success: function (json_respons){
         var err = 0;
         for(var element_name in json_respons){
@@ -52,8 +59,7 @@ $( document ).ready(function() {
           err++;
         }
         if(err == 0) {
-          $('.alert').fadeIn('slow');
-          $('div#comments div#comment_form_panel').fadeOut('slow');
+          onSuccess();
         }
       },
     });
@@ -83,52 +89,18 @@ $( document ).ready(function() {
     }
   }
 
-  function applyCSS(){
-    var func_check = function(e){ return checkInput(e.target);};
-    $(form_selector+" :input").each(function(){
-      if($(this).attr("type") != "submit" && $(this).attr("type") != "hidden"){
-        $(this).keyup(func_check);
-        $(this).focusout(func_check);
-      }
-    });
-  } //applyCSS
-
-  function isno_form_error(){
-    var err = 0;
-    $(form_selector+" .form-errors").each( function (){
-      var l = $.trim($(this).html()).length;
-      err +=l;
-    });
-    return !(err>0);
-  }
-
-  function setCSSandJS(){
-    applyCSS();
-    $(form_selector+" :submit").click(function(e){
-      // if(isno_form_error()){
-        var ajax_deferred = checkAllInput();
-        // $.when(ajax_deferred).done(function(r){
-        //   if(isno_form_error()){
-        //     // maybe call captcha view
-        //     var data = getCommentFormData();
-        //     return $.post({
-        //       // @TODO: call ajax view /blog/comment/form/check/
-        //       url: "/blog/comment/form/",
-        //       data: data,
-        //       success: function(response_html) {
-        //         $("div#comment_form").html(response_html);
-        //         setCSSandJS(); },
-        //     });
-        //   }
-        // });
-      }
-      return false; // avoid to execute the actual form submit
-    }); //click
-  } // setCSSandJS
-
-
   /* *** MAIN *** */
-  setCSSandJS();
+  var func_check = function(e){ return checkInput(e.target);};
+  $(form_selector+" :input").each(function(){
+    if($(this).attr("type") != "submit" && $(this).attr("type") != "hidden"){
+      $(this).keyup(func_check);
+      $(this).focusout(func_check);
+    }
+  });
+  $(form_selector+" :submit").click(function(e){
+    checkAllInput();
+    return false; // avoid to execute the actual form submit
+  }); //click
 
 
 }); // ready
