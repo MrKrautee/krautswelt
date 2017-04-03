@@ -38,9 +38,9 @@ MEDIA_URL = '/media/'
 
 INSTALLED_APPS = [
     'core.apps.CoreConfig',
-    'captcha',
     'contents.apps.ContentsConfig',
     'blog.apps.BlogConfig',
+    'captcha',
     'content_editor',
     'versatileimagefield',
     'ckeditor',
@@ -147,4 +147,7 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 STATIC_ROOT = '%s/static/' % BASE_DIR
-print(STATIC_ROOT)
+
+#CAPTCHA_IMAGE_SIZE = (200, 100) 
+#CAPTCHA_FONT_SIZE = 50
+CAPTCHA_FLITE_PATH = '/usr/bin/flite'

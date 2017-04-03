@@ -1,8 +1,10 @@
-function makeAjaxValidationForm(form_selector, url, func_data, func_onSuccess){  
+function makeAjaxValidationForm(form_selector, url, func_data, func_onSuccess, validate_on_key, func_onError){  
   var form_selector = form_selector;
   var validation_url = url;
   var getCommentFormData = func_data;
   var onSuccess = func_onSuccess;
+  if (typeof validate_on_key === 'undefined') { validate_on_key = true; }
+  if (typeof func_onError === 'undefined') { func_onError = showInputErrors; }
   /** 
    * check a singel input field.
    * @input_element (dom element) ie: $('input#id_website')
@@ -14,7 +16,7 @@ function makeAjaxValidationForm(form_selector, url, func_data, func_onSuccess){
       data: data,
       url: validation_url,
       success: function (json_respons){
-        showInputErrors(input_element.name, json_respons);
+        func_onError(input_element.name, json_respons);
       },
     });
   }
@@ -29,7 +31,7 @@ function makeAjaxValidationForm(form_selector, url, func_data, func_onSuccess){
       success: function (json_respons){
         var err = 0;
         for(var element_name in json_respons){
-          showInputErrors(element_name, json_respons);
+          func_onError(element_name, json_respons);
           err++;
         }
         if(err == 0) {
@@ -61,13 +63,15 @@ function makeAjaxValidationForm(form_selector, url, func_data, func_onSuccess){
     }
   }
   /* *** MAIN *** */
-  var func_check = function(e){ return checkInput(e.target);};
-  $(form_selector+" :input").each(function(){
-    if($(this).attr("type") != "submit" && $(this).attr("type") != "hidden"){
-      $(this).keyup(func_check);
-      $(this).focusout(func_check);
-    }
-  });
+  if(validate_on_key){
+    var func_check = function(e){ return checkInput(e.target);};
+    $(form_selector+" :input").each(function(){
+      if($(this).attr("type") != "submit" && $(this).attr("type") != "hidden"){
+        $(this).keyup(func_check);
+        $(this).focusout(func_check);
+      }
+    });
+  }
   $(form_selector+" :submit").click(function(e){
     checkAllInput();
     return false; // avoid to execute the actual form submit

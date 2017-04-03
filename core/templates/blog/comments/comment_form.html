@@ -1,6 +1,7 @@
 <div id="comment_form" class="">
     <form  method="POST">{% csrf_token %}
         {% for field in comment_form %}
+        {% if field.is_hidden %}{{ field }} {% else %}
         <div class="form-group has-feedback">
             {{ field }}
             <span class="glyphicon form-control-feedback" aria-hidden="true"></span>
@@ -10,7 +11,20 @@
             <div id="{{ field.name }}_errors" class="help-block form-errors">
                 {{ field.errors }}
             </div>
-        </div> {% endfor %}
+        </div>{% endif %}{% endfor %}
+        <div class="form-group">
+            <button type="submit" id="comment_submit" class="btn btn-default">submit</button>
+        </div>
+    </form>
+    </form>
+</div>
+<div id="comment_form_captcha" style="display:none;">
+    <form  method="POST" class="form-horizontal">{% csrf_token %}
+        {% for field in comment_form_captcha %}
+        {% if field.is_hidden %}{{ field }} {% else %}
+        
+            {{ field }}
+        {% endif %}{% endfor %}
         <div class="form-group">
             <button type="submit" id="comment_submit" class="btn btn-default">submit</button>
         </div>
@@ -26,8 +40,9 @@ $( document ).ready(function() {
     $(form_selector+" input#id_website").attr('placeholder', 'http://website');
     $(form_selector+" textarea#id_comment").attr('placeholder', 'your comment ... *');
     $(form_selector+" textarea#id_comment").attr('rows', '3');
-    $(form_selector+" input#id_captcha_1").prop('required',true);
-    $(form_selector+" img.captcha").attr('class', 'thumbnail');
+    $("div#comment_form_captcha form input#id_captcha_1").prop('required',true);
+    $("div#comment_form_captcha form input#id_captcha_1").addClass('form-control');
+    $("div#comment_form_captcha form img.captcha").addClass('thumbnail');
     $(form_selector+" :input").each(function(){
         if($(this).attr("type") != "submit" && $(this).attr("type") != "hidden"){
             $(this).addClass("form-control");
@@ -43,7 +58,6 @@ $( document ).ready(function() {
         var email = $(form_selector+' input#id_email').val();
         var website = $(form_selector+' input#id_website').val();
         var comment = $(form_selector+" textarea#id_comment").val();
-        var entry_id = $("#context-data").attr('data');
         var csrftoken = getCookie('csrftoken');
         var data = {
             name: name,
@@ -55,12 +69,36 @@ $( document ).ready(function() {
         }
         return data;
     }
-
+    
     function onSuccess(){
+        $('div#comment_form').fadeOut();
+        $('div#comment_form_captcha').fadeIn();
+    }
+    
+    function getCaptchaFromData(){
+        var data = getFormData();
+        data.captcha_0 =  $("div#comment_form_captcha form input#id_captcha_0").val();
+        data.captcha_1 =  $("div#comment_form_captcha form input#id_captcha_1").val();
+        return data;
+    }
+    function onSuccessCaptcha(){
         $('div#comments .alert').fadeIn('slow');
         $('div#comments div#comment_form_panel').fadeOut('slow');
 
     }
-    makeAjaxValidationForm(form_selector, "/blog/comment/form/check/", getFormData, onSuccess);
+    function onErrorCaptcha(element_name, json_response){
+        $("div#comment_form_captcha form img.captcha").attr('src', json_response.url);
+        $("div#comment_form_captcha form input#id_captcha_1").val('');
+        $("div#comment_form_captcha form input#id_captcha_1").next('span.glyphicon').addClass('glyphicon-warning-sign');
+        $("div#comment_form_captcha form input#id_captcha_1").parent().addClass('has-warning');
+        $("div#comment_form_captcha form input#id_captcha_1").attr('placeholder', 'TRY AGAIN');
+        $("div#comment_form_captcha form input#id_captcha_1").focus();
+        
+        $("div#comment_form_captcha form input#id_captcha_0").attr('value', json_response.key);
+
+        
+    }
+    makeAjaxValidationForm(form_selector, "/blog/comment/form/check/", getFormData, onSuccess, true);
+    makeAjaxValidationForm("div#comment_form_captcha form", "/blog/comment/form/check/", getCaptchaFromData, onSuccessCaptcha, false, onErrorCaptcha);
 });
 </script>
