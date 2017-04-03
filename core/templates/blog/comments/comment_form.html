@@ -18,7 +18,7 @@
     </form>
     </form>
 </div>
-<div id="comment_form_captcha" style="display:none;">
+<div id="comment_form_captcha" style="display:none;" class="container">
     <form  method="POST" class="form-horizontal">{% csrf_token %}
         {% for field in comment_form_captcha %}
         {% if field.is_hidden %}{{ field }} {% else %}

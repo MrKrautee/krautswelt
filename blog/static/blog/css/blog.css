@@ -27,9 +27,14 @@ textarea#id_comment {
 }
 
 #id_captcha_1 { 
-	float: right;
+
 }
 
+#captcha_audio{
+    position: absolute; 
+    margin: 13px;
+    font-size: large;
+}
 
 
 .input-error {
