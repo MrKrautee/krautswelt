@@ -64,11 +64,22 @@ function makeAjaxValidationForm(form_selector, url, func_data, func_onSuccess, v
   }
   /* *** MAIN *** */
   if(validate_on_key){
-    var func_check = function(e){ return checkInput(e.target);};
+      //setup before functions
+    var typingTimer;                //timer identifier
+    var doneTypingInterval = 1300;  //time in ms, 5 second for example
+    var func_check = function(e){ 
+        clearTimeout(typingTimer);
+        typingTimer = setTimeout(function(){
+            return checkInput(e.target);
+        }, doneTypingInterval);
+
+        
+    };
     $(form_selector+" :input").each(function(){
       if($(this).attr("type") != "submit" && $(this).attr("type") != "hidden"){
         $(this).keyup(func_check);
-        $(this).focusout(func_check);
+        $(this).keydown(function(){clearTimeout(typingTimer)});
+        $(this).focusout(function(e){return checkInput(e.target);});
       }
     });
   }
