@@ -24,6 +24,7 @@
         {% if field.is_hidden %}{{ field }} {% else %}
         
             {{ field }}
+            
         {% endif %}{% endfor %}
         <div class="form-group">
             <button type="submit" id="comment_submit" class="btn btn-default">submit</button>
@@ -43,6 +44,8 @@ $( document ).ready(function() {
     $("div#comment_form_captcha form input#id_captcha_1").prop('required',true);
     $("div#comment_form_captcha form input#id_captcha_1").addClass('form-control');
     $("div#comment_form_captcha form img.captcha").addClass('thumbnail');
+    $("div#comment_form_captcha form input#id_captcha_1").attr('placeholder', 'captcha *');
+    $("div#comment_form_captcha form div#id_captcha_help").html('please enter the chars from the image.');
     $(form_selector+" :input").each(function(){
         if($(this).attr("type") != "submit" && $(this).attr("type") != "hidden"){
             $(this).addClass("form-control");
@@ -91,9 +94,10 @@ $( document ).ready(function() {
         $("div#comment_form_captcha form input#id_captcha_1").val('');
         $("div#comment_form_captcha form input#id_captcha_1").next('span.glyphicon').addClass('glyphicon-warning-sign');
         $("div#comment_form_captcha form input#id_captcha_1").parent().addClass('has-warning');
-        $("div#comment_form_captcha form input#id_captcha_1").attr('placeholder', 'TRY AGAIN');
+        $("div#comment_form_captcha form input#id_captcha_1").attr('placeholder', 'please try again.');
         $("div#comment_form_captcha form input#id_captcha_1").focus();
-        
+        var captcha_help = $("div#comment_form_captcha form div#id_captcha_help").html();
+        $("div#comment_form_captcha form div#id_captcha_help").html('captcha reloaded.');
         $("div#comment_form_captcha form input#id_captcha_0").attr('value', json_response.key);
 
         
