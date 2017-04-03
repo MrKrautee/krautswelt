@@ -45,7 +45,8 @@ $( document ).ready(function() {
     $("div#comment_form_captcha form input#id_captcha_1").addClass('form-control');
     $("div#comment_form_captcha form img.captcha").addClass('thumbnail');
     $("div#comment_form_captcha form input#id_captcha_1").attr('placeholder', 'captcha *');
-    $("div#comment_form_captcha form div#id_captcha_help").html('please enter the chars from the image.');
+    $("div#comment_form_captcha form div#id_captcha_help").html('human or robot? please enter the chars from the image.');
+
     $(form_selector+" :input").each(function(){
         if($(this).attr("type") != "submit" && $(this).attr("type") != "hidden"){
             $(this).addClass("form-control");
@@ -91,6 +92,7 @@ $( document ).ready(function() {
     }
     function onErrorCaptcha(element_name, json_response){
         $("div#comment_form_captcha form img.captcha").attr('src', json_response.url);
+        $("div#comment_form_captcha form a#captcha_audio_url").attr('href', json_response.audio_url);
         $("div#comment_form_captcha form input#id_captcha_1").val('');
         $("div#comment_form_captcha form input#id_captcha_1").next('span.glyphicon').addClass('glyphicon-warning-sign');
         $("div#comment_form_captcha form input#id_captcha_1").parent().addClass('has-warning');

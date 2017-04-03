@@ -1,14 +1,15 @@
 from django.shortcuts import render
 from django.shortcuts import get_object_or_404
-from django.forms import ModelForm 
+from django.forms import ModelForm
 from django.forms import HiddenInput, Textarea, TextInput
-from django.http import JsonResponse, HttpResponseForbidden, HttpResponseNotAllowed
+from django.http import JsonResponse, HttpResponseNotAllowed
+from django.core.urlresolvers import reverse
 
 from contents.views import render_content_to_string
 
 from captcha.fields import CaptchaField, CaptchaTextInput
 from captcha.models import CaptchaStore
-from captcha.helpers import captcha_image_url 
+from captcha.helpers import captcha_image_url
 
 from .models import BlogEntry
 from .models import RichTextContent, ImageContent
@@ -47,8 +48,10 @@ def comment_form_check(request):
             else:
                 key = CaptchaStore.generate_key()
                 url = captcha_image_url(key)
+                audio_url = reverse('captcha-audio', args=[key])
                 new_captcha = {
                     'url': url,
+                    'audio_url': audio_url,
                     'key': key,
                 }
                 return JsonResponse(new_captcha)

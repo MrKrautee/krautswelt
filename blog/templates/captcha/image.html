@@ -1,4 +1,12 @@
 {% load i18n %}
+<script>
+function playAudio(audio_url){
+    var pop_up = window.open(audio_url, 'audio captcha', 'height=200,width=400,scrollbars=yes');
+//     pop_up.resizeTo(0,0); 
+//     pop_up.moveTo(0,window.screen.availHeight+10);
+    return false;
+}
+</script>
 {% spaceless %}
-    {% if audio %}<div><a title="{% trans "Play CAPTCHA as audio file" %}" onClick="window.open('{{audio}}', 'audio captcha', 'height=200,width=400,scrollbars=yes');">{% endif %}<img src="{{image}}" alt="captcha" class="captcha" />{% if audio %}</a><a title="{% trans "Play CAPTCHA as audio file" %}" onClick="window.open('{{audio}}', 'audio captcha', 'height=200,width=400,scrollbars=yes');"><span id="captcha_audio" class="glyphicon glyphicon-volume-up"></span></a></div>{% endif %}
+    {% if audio %}<div><a id="captcha_audio_url" title="{% trans "Play CAPTCHA as audio file" %}" href="{{audio}}" onClick="return playAudio(this.href);">{% endif %}<img src="{{image}}" alt="captcha" class="captcha" />{% if audio %}<span id="captcha_audio" class="glyphicon glyphicon-volume-up"></span></a></div>{% endif %}
 {% endspaceless %}
