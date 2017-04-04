@@ -75,6 +75,8 @@ $(document).ready(function() {
 				captcha_input.next('span.glyphicon').addClass('glyphicon-remove');
 				captcha_input.parent().addClass('has-error');
 				captcha_input.attr('placeholder', 'please try again.');
+				$(this.selector+' div#id_captcha_help').hide();
+				$(this.selector+' div#id_captcha_errors').html(json_response.captcha_1.errors.captcha);
 				captcha_input.focus();
 				// indicate reload with popover
 				$(captcha_form_selector+" img.captcha").popover({
