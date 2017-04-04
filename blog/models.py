@@ -59,6 +59,9 @@ class BlogEntry(models.Model):
         # @TODO:
         pass
 
+    #def __str__(self):
+    #    return u"%s" % self.title[:20]
+
 BlogEntryContent = create_plugin_base(BlogEntry)
 
 

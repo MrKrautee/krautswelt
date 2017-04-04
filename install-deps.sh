@@ -5,6 +5,6 @@ if [ ! $VIRTUAL_ENV ]; then
 	echo "... loading virtual environment"
 	. venv/bin/activate
 fi
-
-pip install $(cat requirements.txt | tr '\n' ' ')
+echo "" > ./install-deps.log
+pip install $(cat requirements.txt | tr '\n' ' ') --log ./install-deps.log
 
