@@ -30,12 +30,12 @@ class CaptchaCommentForm(ModelForm):
         model = Comment
         fields = ['name', 'email', 'website', 'comment','parent']
         widgets = {
-            'name': HiddenInput(), 
-            'email': HiddenInput(), 
-            'website': HiddenInput(), 
-            'comment': HiddenInput(), 
-            'parent': HiddenInput(), 
-                  }
+            'name': HiddenInput(),
+            'email': HiddenInput(),
+            'website': HiddenInput(),
+            'comment': HiddenInput(),
+            'parent': HiddenInput(),
+        }
 
 
 def comment_form_check(request):
@@ -46,14 +46,20 @@ def comment_form_check(request):
             if form_captcha.is_valid():
                 form.save()
             else:
+                print(form_captcha.errors)
                 key = CaptchaStore.generate_key()
                 url = captcha_image_url(key)
                 audio_url = reverse('captcha-audio', args=[key])
-                new_captcha = {
-                    'url': url,
-                    'audio_url': audio_url,
-                    'key': key,
-                }
+                # need no exact error message but captcha reload.
+                # use data structure same as form.erros because javascript
+                # expecting it... (? dirty or not ?)
+                new_captcha = {'captcha_1': { 'url': url,
+                                             'audio_url': audio_url,
+                                             'key': key,
+                                             'errors':
+                                             form_captcha.errors,
+                                            }
+                              }
                 return JsonResponse(new_captcha)
         return JsonResponse(form.errors)
     else:

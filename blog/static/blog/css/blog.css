@@ -33,11 +33,19 @@ textarea#id_comment {
 #captcha_audio{
     position: absolute; 
     margin: 13px;
-    font-size: large;
+    font-size: 1.7em;
 }
 
 
 .input-error {
     border: 1px solid indianred;
     border-color: indianred;
+}
+
+#captcha_reload_popover {
+   font-color: indianred;
+}
+
+.popover {
+    max-width: none;
 }
