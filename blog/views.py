@@ -58,7 +58,7 @@ def comment_form_check(request):
                         'audio_url': audio_url,
                         'key': key,
                         'errors':
-                        form_captcha.errors,
+                        form_captcha.errors['captcha'],
                     }
                 }
                 return JsonResponse(new_captcha)
