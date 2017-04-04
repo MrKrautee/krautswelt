@@ -16,7 +16,6 @@
 			<button type="submit" id="comment_submit" class="btn btn-default">submit</button>
 		</div>
 	</form>
-	</form>
 </div>
 <div id="comment_form_captcha" style="display:none;" class="container">
 	<form  method="POST" class="form-horizontal">{% csrf_token %}
@@ -29,7 +28,7 @@
 	</form>
 </div>
 <script>
-$( document ).ready(function() {
+$(document).ready(function() {
 	var form_selector = "div#comment_form form";
 	var captcha_form_selector = "div#comment_form_captcha form";
 	var url = "/blog/comment/form/check/";
@@ -62,20 +61,22 @@ $( document ).ready(function() {
 			// do it for the captcha input only and not for
 			// the other fields
 			if(element_name === "captcha_1"){
-				var captcha_input_selector = "div#comment_form_captcha form "+
-					"input#id_captcha_1"
-					var captcha_input = $(captcha_input_selector);
-				$(captcha_form_selector+" img.captcha").attr('src',
+				var captcha_input_selector = this.selector+" input#id_captcha_1"
+				var captcha_input = $(captcha_input_selector);
+				// reload captcha
+				$(this.selector+" img.captcha").attr('src',
 						json_response.captcha_1.url);
-				$(captcha_form_selector+" a#captcha_audio_url").attr('audio-url',
+				$(this.selector+" a#captcha_audio_url").attr('audio-url',
 						json_response.captcha_1.audio_url);
-				$(captcha_form_selector+" input#id_captcha_0").attr('value',
+				$(this.selector+" input#id_captcha_0").attr('value',
 						json_response.captcha_1.key);
+				// reset input - show error
 				captcha_input.val('');
-				captcha_input.next('span.glyphicon').addClass('glyphicon-warning-sign');
-				captcha_input.parent().addClass('has-warning');
+				captcha_input.next('span.glyphicon').addClass('glyphicon-remove');
+				captcha_input.parent().addClass('has-error');
 				captcha_input.attr('placeholder', 'please try again.');
 				captcha_input.focus();
+				// indicate reload with popover
 				$(captcha_form_selector+" img.captcha").popover({
 					placement: 'right',
 					trigger: 'manual',
@@ -84,13 +85,13 @@ $( document ).ready(function() {
 					delay: {show: 100, hide: 1500},
 					content: '<div id="captcha_reload_popover">reloaded</div>',
 				});
-				$(captcha_form_selector+" img.captcha").popover('show');
+				$(this.selector+" img.captcha").popover('show');
+				var self = this;
 				setTimeout(function(){
-					$(captcha_form_selector+
-							" .popover").fadeOut('slow');
-					$(captcha_form_selector+
+					$(self.selector+" .popover").fadeOut('slow');
+					$(self.selector+
 							" img.captcha").popover('hide');
-				}, 833);
+				}, 733);
 			}
 
 		}
@@ -98,13 +99,15 @@ $( document ).ready(function() {
 	};
 	var CommentForm = {
 		selector: form_selector,
+		captcha_selector: CaptchaForm.selector,
 		url: url,
 		onSuccess: function (){
 			$('div#comment_form').fadeOut();
 			// copy comment form data to captcha form
-			$(form_selector+" :input").each(function(){
+			var self = this;
+			$(this.selector+" :input").each(function(){
 				if($(this).attr("type") != "submit"){
-					var select_new = "div#comment_form_captcha form #"+$(this).attr('id');
+					var select_new = self.captcha_selector+" #"+$(this).attr('id');
 					var val_old = $(this).val();
 					$(select_new).val(val_old);
 				}

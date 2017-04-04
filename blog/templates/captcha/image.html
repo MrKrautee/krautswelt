@@ -1,34 +1,38 @@
 {% load i18n %}
 <script>
-function playAudio(audio_url){
-    return false;
-    var pop_up = window.open(audio_url, 'audio captcha', 'height=200,width=400,scrollbars=yes');
-//     pop_up.resizeTo(0,0); 
-//     pop_up.moveTo(0,window.screen.availHeight+10);
-    return false;
-}
 $( document ).ready(function() {
-    $('#captcha_audio_url').popover({
-        html: true,
-        placement: 'top',
-        trigger: 'click',
-        title: '{% trans "Play CAPTCHA as audio file" %}'+'<button id="popovercloseid" type="button" class="close">&times;</button>',
-        content: function(){
-            return '<div id="captcha_audio_play"><audio src="'+$(this).attr('audio-url')+'" controls autoplay>Your browser does not support the HTML5 Audio element.</audio></div>'  ;
-        },
-    }).on('shown.bs.popover', function() {
-    // Define elements
-    var current_trigger=$(this);
-    var current_popover=current_trigger.data('bs.popover').tip();
-
-    // Activate close button
-    current_popover.find('button.close').click(function() {
-        $('#captcha_audio_url').click();
-//         current_trigger.popover('hide');
-    });
-});
+	$('#captcha_audio_url').popover({
+		html: true,
+		placement: 'top',
+		trigger: 'click',
+		title: '{% trans "Play CAPTCHA as audio file" %}'+
+			'<button type="button" class="close">&times;</button>',
+		content: function(){
+			var err = '{% trans "Your browser does not support the HTML5 Audio element." %}';
+			return '<div id="captcha_audio_play"><audio src="'+$(this).attr('audio-url')+
+				'" controls autoplay>'+err+'</audio></div>';
+		},
+	}).on('shown.bs.popover', function() {
+		var current_trigger=$(this);
+		var current_popover=current_trigger.data('bs.popover').tip();
+		// Activate close button
+		current_popover.find('button.close').click(function() {
+			// cause popover('hide') acts crazy.
+			$('#captcha_audio_url').click();
+		});
+		$('div#captcha_audio_play audio').on('play', function (e){
+			$('input#id_captcha_1').focus();
+		});
+		$('div#captcha_audio_play audio').on('ended', function (e){
+			$('#captcha_audio_url').click();
+			$('input#id_captcha_1').focus();
+		});
+	});
 });
 </script>
 {% spaceless %}
-    {% if audio %}<div><a id="captcha_audio_url"  audio-url="{{audio}}">{% endif %}<img src="{{image}}" alt="captcha" class="captcha thumbnail"/>{% if audio %}<span id="captcha_audio" class="glyphicon glyphicon-volume-up"></span></a></div>{% endif %}
+{% if audio %}<div><a id="captcha_audio_url"  audio-url="{{audio}}">{% endif %}
+		<img src="{{image}}" alt="captcha" class="captcha thumbnail"/>
+{% if audio %}<span id="captcha_audio" class="glyphicon glyphicon-volume-up"></span>
+</a></div>{% endif %}
 {% endspaceless %}
