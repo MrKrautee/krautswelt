@@ -1,7 +1,9 @@
 {% extends "base.html" %}
-{% block head %}
-<link rel="stylesheet" href="/static/blog/css/blog.css">
-{% endblock head %}
+{% load i18n static %}
+{% block title %}Blog - {{ object.title }}{% endblock title %}
+{% block extrastyle %}
+<link rel="stylesheet" href={% static "/blog/css/blog.css" %}>
+{% endblock extrastyle %}
 
 {% block content %}
 <div class="row"><h3><a href=".">{{object.title }}</a></h3></div>

@@ -1,21 +1,23 @@
-<!DOCTYPE html>
-{% load i18n %}
-<html>
+{% load i18n static %}<!DOCTYPE html>
+{% get_current_language as LANGUAGE_CODE %}{% get_current_language_bidi as LANGUAGE_CODE_BIDI %}
+<html lang="{{ LANGUAGE_CODE|default:"en-us" }}" {% if LANGUAGE_BIDI %}dir="rtl"{% endif %}>
     <head>
         <title> {% block title %} {% endblock %} </title>
-        <link rel="stylesheet" href="/static/bootstrap/css/bootstrap.min.css">
-        <script src="/static/core/js/jquery-3.2.0.min.js"></script>
-        <script src="/static/core/js/tools.js"></script>
-        <script src="/static/core/js/forms.js"></script>
+	<link rel="stylesheet" href={% static "/3rdparty/bootstrap/css/bootstrap.min.css" %}>
+	{% block extrastyle %} {% endblock %}
+	<script src={% static "/3rdparty/jquery-3.2.0.min.js" %}></script>
+	<script src={% static "/helpers/js/tools.js" %}></script>
+	{% block extrajs %} {% endblock %}
+	{% block extrahead %} {% endblock %}
+
         <!-- Required meta tags -->
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-	{% block head %} {% endblock %}
     </head>
     <body>
         <div class="container">
             {% block content %} {% endblock %}
         </div>
-        <script src="/static/bootstrap/js/bootstrap.min.js"></script>
+	<script src={% static "/3rdparty/bootstrap/js/bootstrap.min.js" %}></script>
     </body>
 </html>

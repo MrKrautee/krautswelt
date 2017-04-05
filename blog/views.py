@@ -1,9 +1,11 @@
+from django.utils.translation import ugettext_lazy as _
 from django.shortcuts import render
 from django.shortcuts import get_object_or_404
 from django.forms import ModelForm
 from django.forms import HiddenInput
 from django.http import JsonResponse, HttpResponseNotAllowed
 from django.core.urlresolvers import reverse
+from django.template.loader import render_to_string
 
 from contents.views import render_content_to_string
 
@@ -17,14 +19,24 @@ from .models import Comment
 
 
 class CommentForm(ModelForm):
+    def __init__(self, *args, **kwargs):
+        super(CommentForm, self).__init__(*args, **kwargs)
+        self.fields['name'].widget.attrs['placeholder'] = _("name *")
+        self.fields['email'].widget.attrs['placeholder'] = _("email *")
+        self.fields['website'].widget.attrs['placeholder'] = _("my.website.com *")
+        self.fields['comment'].widget.attrs['placeholder'] = _("your comment ...")
+        self.fields['comment'].widget.attrs['rows'] = 3
+
     class Meta:
         model = Comment
         fields = ['name', 'email', 'website', 'comment', 'parent']
         widgets = {'parent': HiddenInput(), }
 
 
+
 class CaptchaCommentForm(ModelForm):
     captcha = CaptchaField(required=True)
+
 
     class Meta:
         model = Comment
@@ -49,6 +61,9 @@ def comment_form_check(request):
                 key = CaptchaStore.generate_key()
                 url = captcha_image_url(key)
                 audio_url = reverse('captcha-audio', args=[key])
+                reload_popover_html = render_to_string(
+                    'captcha/reload_popover.html',
+                                {})
                 # need no exact error message but captcha reload.
                 # use data structure same as form.erros because javascript
                 # expecting it... (? dirty or not ?)
@@ -59,6 +74,8 @@ def comment_form_check(request):
                         'key': key,
                         'errors':
                         form_captcha.errors['captcha'],
+                        'error_placeholder': _('please try again.'),
+                        'reload_popover_html': reload_popover_html,
                     }
                 }
                 return JsonResponse(new_captcha)

@@ -95,8 +95,12 @@ class Comment(models.Model):
 
     parent = models.ForeignKey(BlogEntry)
 
-    name = models.CharField(_('name'), max_length=100)
-    email = models.EmailField(_('email'))
+    name = models.CharField(_('name'),
+                            max_length=100,
+                            help_text=_('Your name will be published.'))
+    email = models.EmailField(
+        _('email'),
+        help_text=_('Your email will never shown to anyone else'))
     website = models.URLField(_('website'), blank=True)
     comment = models.TextField(_('comment'))
     date = models.DateTimeField(_('date'), auto_now_add=True,
