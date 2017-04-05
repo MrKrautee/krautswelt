@@ -1,0 +1,7 @@
+--upgrade pip
+Django==1.10.6
+Pillow
+django-ckeditor
+django-content-editor
+django-versatileimagefield
+django-simple-captcha
