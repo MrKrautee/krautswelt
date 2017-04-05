@@ -1,0 +1,14 @@
+
+{% load i18n %}
+{% for field in form %}
+{% if field.is_hidden %}{{ field }} {% else %}
+<div class="form-group has-feedback">
+    {{ field }}
+    <span class="glyphicon form-control-feedback" aria-hidden="true"></span>
+    <div id="{{ field.name }}_help" class="help-block text-muted">
+        {{ field.help_text }}
+    </div>
+    <div id="{{ field.name }}_errors" class="help-block form-errors">
+        {{ field.errors }}
+    </div>
+</div>{% endif %}{% endfor %}

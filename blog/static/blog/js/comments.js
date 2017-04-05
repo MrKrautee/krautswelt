@@ -2,7 +2,7 @@
 // @require: bootstrap (CSS)
 // @require: /helpers/js/forms.js
 $(document).ready(function() {
-  var url = $('#comment-js').attr('data-url')
+  var url = $('#comment-js').attr('data-url');
   var form_selector = "div#comment_form form";
   var captcha_form_selector = "div#comment_form_captcha form";
   // .form-control needed for bootstrap forms 

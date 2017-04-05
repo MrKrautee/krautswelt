@@ -1,34 +1,17 @@
 {% load i18n static %}
-{% block extrajs %}
-<script src={% static "/helpers/js/forms.js" %}></script>
-<script id="comment-js" src="{% static '/blog/js/comments.js' %}" data-url="{% url "comment_form_check" %}"></script>
-{% endblock extrajs %}
 <div id="comment_form" class="">
 	<form  method="POST">{% csrf_token %}
-		{% for field in comment_form %}
-		{% if field.is_hidden %}{{ field }} {% else %}
-		<div class="form-group has-feedback">
-			{{ field }}
-			<span class="glyphicon form-control-feedback" aria-hidden="true"></span>
-			<div id="{{ field.name }}_help" class="help-block text-muted">
-				{{ field.help_text }}
-			</div>
-			<div id="{{ field.name }}_errors" class="help-block form-errors">
-				{{ field.errors }}
-			</div>
-		</div>{% endif %}{% endfor %}
+		{% include "helpers/form.html" with form=comment_form %}
 		<div class="form-group">
-			<button type="submit" id="comment_submit" class="btn btn-default">submit</button>
+			<button type="submit" class="btn btn-default">{% trans "submit" %}</button>
 		</div>
 	</form>
 </div>
 <div id="comment_form_captcha" style="display:none;" class="container">
 	<form  method="POST" class="form-horizontal">{% csrf_token %}
-		{% for field in comment_form_captcha %}
-		{{ field }}
-		{% endfor %}
+		{{ comment_form_captcha }}
 		<div class="form-group">
-			<button type="submit" id="comment_submit" class="btn btn-default">submit</button>
+			<button type="submit" class="btn btn-default">{% trans "submit" %}</button>
 		</div>
 	</form>
 </div>

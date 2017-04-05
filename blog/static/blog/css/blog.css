@@ -1,3 +1,4 @@
+/* imagecontent align */
 .img_r {
     display: inline;
     float: right;
@@ -13,21 +14,19 @@
 .img_n {
     float: none;
 }
+
 .text-italic {
     font-style: italic;
 }
 
-img.captcha { 
-	float: left;
-	display: inline;
-}
-
+/* START comment form */
 textarea#id_comment {
-	height: inherit;
+    height: inherit;
 }
 
-#id_captcha_1 { 
-
+img.captcha { 
+    float: left;
+    display: inline;
 }
 
 #captcha_audio{
@@ -37,15 +36,20 @@ textarea#id_comment {
 }
 
 
-.input-error {
-    border: 1px solid indianred;
-    border-color: indianred;
-}
-
 #captcha_reload_popover {
-   font-color: indianred;
+    font-color: indianred;
 }
 
 .popover {
     max-width: none;
 }
+/* END comment form */
+
+/* START comment list */
+.comment-header { }
+.comment-body { }
+.comment-footer { 
+    padding: 1px 15px;
+}
+/* END comment list */
+

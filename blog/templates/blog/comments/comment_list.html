@@ -1,18 +1,17 @@
 {% for comment in comments %}
 <div class="panel panel-default">
-	<div class="panel-heading" id="comment-meta-{{ comment.id }}">
-	<a href="#comment-meta-{{ comment.id }}">
-	<i class="glyphicon glyphicon-link"></i> {{ comment.name }}
-    </a>
-    <small class="text-muted font-italic comment_date">on {{ comment.date }}</small>
-
-	</div>
-	<div class="panel-body" id="comment-text-{{ comment.id }}">{{ comment.comment }} </div>
-	{% if comment.website %}
-	<div class="panel-footer text-muted font-italic" style="padding: 1px 15px;">
+    <div class="panel-heading comment-header" id="comment-meta-{{ comment.id }}">
+        <a href="#comment-meta-{{ comment.id }}">
+            <i class="glyphicon glyphicon-link"></i> {{ comment.name }}
+        </a>
+        <small class="text-muted font-italic comment_date">on {{ comment.date }}</small>
+    </div>
+    <div class="panel-body comment-body" id="comment-text-{{ comment.id }}">{{ comment.comment }} </div>
+    {% if comment.website %}
+    <div class="panel-footer text-muted font-italic comment-footer">
         <small>
             from <a href="http://{{ comment.website }}">{{comment.website}}</a>
         </small>
     </div>
-	{% endif %}
+    {% endif %}
 </div>{% endfor %}
