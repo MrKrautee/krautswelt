@@ -20,30 +20,21 @@ from django.conf.urls import include, url
 
 from django.conf.urls.static import static
 
-from django.conf.urls import url
 from django.contrib import admin
-
-from django.contrib.staticfiles.urls import staticfiles_urlpatterns
-
-from blog.views import  entry_detail, comment_form_check
-import captcha
 
 media_urls = static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 static_urls = static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
 urlpatterns = [
-    url(r'^blog/comment/form/check/', comment_form_check, name='comment_form_check'),
-    url(r'^blog/(?P<slug>[-\w]+)/$', entry_detail,
-        name='entry-detail'),
-     url(r'^captcha/', include('captcha.urls')),
+    url(r'^blog/', include('blog.urls')),
+    url(r'^captcha/', include('captcha.urls')),
     url(r'^admin/', admin.site.urls),
 ]
 
-urlpatterns +=media_urls
-urlpatterns +=static_urls
-# urlpatterns +=staticfiles_urlpatterns()
+urlpatterns += media_urls
+urlpatterns += static_urls
 
-#if settings.DEBUG:
-#    import debug_toolbar
-#    urlpatterns = [
-#        url(r'^__debug__/', include(debug_toolbar.urls)),
-#    ] + urlpatterns
+# if settings.DEBUG:
+#     import debug_toolbar
+#     urlpatterns = [
+#         url(r'^__debug__/', include(debug_toolbar.urls)),
+#     ] + urlpatterns
