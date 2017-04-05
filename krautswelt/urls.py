@@ -17,17 +17,17 @@ Including another URLconf
 
 from django.conf import settings
 from django.conf.urls import include, url
-
 from django.conf.urls.static import static
-
 from django.contrib import admin
+
+from krautswelt.admin import admin_site
 
 media_urls = static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 static_urls = static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
 urlpatterns = [
     url(r'^blog/', include('blog.urls')),
     url(r'^captcha/', include('captcha.urls')),
-    url(r'^admin/', admin.site.urls),
+    url(r'^admin/', admin_site.urls),
 ]
 
 urlpatterns += media_urls

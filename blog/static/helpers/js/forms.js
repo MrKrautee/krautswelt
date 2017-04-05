@@ -1,5 +1,14 @@
 /**
  * set up ajax form.
+ *  use as following:
+ *    setUpAjaxForm('#form-select', '/url/');
+ *    setUpAjaxForm({
+ *            url: '/url',
+ *            selector: '#form_sel',
+ *            onSuccess: function(){}
+ *    });
+ *    setUpAjaxForm('#form-select', '/url/', {onFieldError: function(){}});
+ *
  * @param {string} form_selector - form to validate.
  * @param {string} url - specify the validation server.
  * @param {Object} [options]

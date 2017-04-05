@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     'ckeditor',
     # 'debug_toolbar.apps.DebugToolbarConfig',
     'django.contrib.admin',
+    'krautswelt',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',

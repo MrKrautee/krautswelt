@@ -1,10 +1,6 @@
 import datetime
-
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
-from django.utils.html import format_html, mark_safe
-from django.shortcuts import render
-from django.template.loader import render_to_string
 
 from content_editor.models import create_plugin_base, Region
 
@@ -22,14 +18,15 @@ class Category(models.Model):
 
 class BlogEntryManager(models.Manager):
 
-   def get_queryset(self):
-       qs = super(BlogEntryManager, self).get_queryset()
-       return qs
+    def get_queryset(self):
+        qs = super(BlogEntryManager, self).get_queryset()
+        return qs
 
-   def get_active(self):
-       qs = self.get_queryset().filter(is_active=True)
-       qs = qs.filter(pub_date__lte=datetime.datetime.now())
-       return qs
+    def get_active(self):
+        qs = self.get_queryset().filter(is_active=True)
+        qs = qs.filter(pub_date__lte=datetime.datetime.now())
+        qs = qs.order_by('-pub_date')
+        return qs
 
 
 class BlogEntry(models.Model):
@@ -39,17 +36,14 @@ class BlogEntry(models.Model):
     pub_date = models.DateTimeField(_('publication date'))
     create_date = models.DateTimeField(_('creation date'), auto_now_add=True,
                                        editable=False)
-    # last_change = models.DateTimeField(_('last change date'), auto_now=True,
-    #                                editable=False)
     is_featured = models.BooleanField(_('is featured'), default=False)
     is_active = models.BooleanField(_('is active'), default=False)
 
-
     categories = models.ManyToManyField(Category, verbose_name=_('categories'),
-                                                                 related_name='blogentries',
-                                                                 blank=True)
+                                        related_name='blogentries',
+                                        blank=True)
 
-    #@TODO: related_entries
+    # @TODO: related_entries
 
     regions = (Region(key='main', title=_('Main')), )
 
@@ -57,28 +51,31 @@ class BlogEntry(models.Model):
 
     def excerpt(self):
         # @TODO:
-        pass
+            pass
 
-    #def __str__(self):
-    #    return u"%s" % self.title[:20]
+    def __str__(self):
+        return "%s" % self.title[:20]
 
 BlogEntryContent = create_plugin_base(BlogEntry)
 
 
 class ImageContent(AbstractImageContent, BlogEntryContent):
 
-    LEFT='l'
+    LEFT = 'l'
     RIGHT = 'r'
     NONE = 'n'
 
     IMAGE_ALIGN_CHOICES = ((LEFT, 'left'), (RIGHT, 'right'), (NONE, 'none'))
 
-    css_float = models.CharField(_('css float'), max_length=1,
-                             choices=IMAGE_ALIGN_CHOICES, default=RIGHT)
+    css_float = models.CharField(_('css float'),
+                                 max_length=1,
+                                 choices=IMAGE_ALIGN_CHOICES,
+                                 default=RIGHT)
 
 
 class RichTextContent(AbstractRichTextContent, BlogEntryContent):
     pass
+
 
 class CommentManager(models.Manager):
 
@@ -89,6 +86,12 @@ class CommentManager(models.Manager):
         qs_filtered = qs.filter(is_active=False, parent=entry)
         qs_filtered = qs_filtered.order_by('-date')
         return qs_filtered
+
+    def get_unapproved(self):
+        qs = self.get_queryset()
+        qs = qs.filter(is_active=False)
+        qs = qs.order_by('-date')
+        return qs
 
 
 class Comment(models.Model):
@@ -110,6 +113,12 @@ class Comment(models.Model):
     notify_new_comment = models.BooleanField(_('notify me for new comments'),
                                              default=False)
     notify_new_entry = models.BooleanField(_('notify me for new blog entries'),
-                                             default=False)
+                                           default=False)
     objects = CommentManager()
 
+    def approve(self):
+        self.is_active = True
+        return self.save()
+
+    def set_spam(self):
+        return self.delete()
