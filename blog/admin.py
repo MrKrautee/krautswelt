@@ -30,13 +30,21 @@ class BlogEntryAdmin(ContentEditor):
     # fielfsets =
     view_on_site = True
     search_fields = ('title', )
-    list_filter = ('pub_date', 'create_date')
+    list_filter = ('pub_date', 'create_date', 'is_active')
     ordering = ('title', 'pub_date', 'create_date')
 
     def view_on_site(self, obj):
         url = reverse('entry-detail', kwargs={'slug': obj.slug})
         return url
 
+def approve_comment(modeladmin, request, queryset):
+        for comment in queryset:
+            comment.approve()
+approve_comment.short_description = _("approve comment(s)")
+class CommentAdmin(ModelAdmin):
+    list_filter = ('is_active',)
+    list_display = ('name', 'email', 'comment_excerpt', 'website', 'date')
+    actions = ( approve_comment, )
 
 # in case that krautswelt is installed.
 # indicate new comments to approve, in admin index.
@@ -47,7 +55,10 @@ try:
         comments_qs = Comment.objects.get_unapproved()
         comments_count = comments_qs.count()
         msg = _('%i new comment(s) to approve.') % comments_count
-        url = '/test/url/to/voew/'
+        app_label = Comment._meta.app_label
+        model_name = Comment._meta.model_name
+        url = reverse('admin:%s_%s_changelist' % (app_label, model_name))
+        url = '%s?is_active__exact=0' % url
         if comments_count > 0:
             return {'msg': msg, 'url': url}
         return None
@@ -57,3 +68,4 @@ except:
 
 site.register(Category, CategoryAdmin)
 site.register(BlogEntry, BlogEntryAdmin)
+site.register(Comment, CommentAdmin)

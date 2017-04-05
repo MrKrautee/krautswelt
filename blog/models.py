@@ -83,7 +83,7 @@ class CommentManager(models.Manager):
         qs = self.get_queryset()
         # until there is no feature to activate comments, show
         # inactive ones, too.
-        qs_filtered = qs.filter(is_active=False, parent=entry)
+        qs_filtered = qs.filter(is_active=True, parent=entry)
         qs_filtered = qs_filtered.order_by('-date')
         return qs_filtered
 
@@ -122,3 +122,6 @@ class Comment(models.Model):
 
     def set_spam(self):
         return self.delete()
+
+    def comment_excerpt(self):
+        return self.comment[:100]

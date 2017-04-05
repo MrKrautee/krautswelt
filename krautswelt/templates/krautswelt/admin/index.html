@@ -1,5 +1,5 @@
 {% extends "admin/base_site.html" %}
-{% load i18n static %}
+{% load i18n static admin_urls %}
 
 {% block extrastyle %}{{ block.super }}
 <link rel="stylesheet" type="text/css" href="{% static "admin/css/dashboard.css" %}" />
@@ -15,8 +15,33 @@
 {% block breadcrumbs %}{% endblock %}
 
 {% block content %}
+
+{% if notifications %}
+<div class="panel-group">
+    <div id="app-notifications" class="panel panel-info">
+        <div class="panel-heading">
+            <h4 class="panel-title">
+            <a href="#collapse1" data-toggle="collapse">{% trans "Notifications" %}</a>
+            </h4>
+        </div>
+        <div id="collapse1" class="panel-collapse collapse in">
+            <ul class="list-group">
+                {% for msg in notifications %}
+                <li class="list-group-item">
+                    <small>
+                    <a href="{% url "admin:app_list" msg.app_label %}">
+                        {{ msg.app_label|capfirst }}</a>:<a href= "{% url
+                        "admin:"|add:msg.app_label|add:"_"|add:msg.model_name|add:"_changelist"
+                        %}">{{ msg.model_name|capfirst }}</a>&gt;</small>
+                    <a href="{{ msg.url }}">{{ msg.msg }}</a>
+                </li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+</div>
+{% endif %}
 <div id="content-main">
-    {{ notifications }}
 {% if app_list %}
     {% for app in app_list %}
         <div class="app-{{ app.app_label }} module panel panel-primary">

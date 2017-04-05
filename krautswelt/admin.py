@@ -37,11 +37,14 @@ class KrautsweltAdminSite(AdminSite):
     def index(self, request, extra_context=None):
         if extra_context is None:
             extra_context = {}
-        msgs = {}
+        msgs = [] 
         for model, callback in self._notificions_callbacks.items():
             msg = callback(request)
             if msg:
-                msgs[model] = msg
+                tmp = { 'app_label': model._meta.app_label,
+                       'model_name': model._meta.model_name }
+                tmp.update(msg)
+                msgs.append(tmp)
         extra_context['notifications'] = msgs
         # add extra context
         return super(KrautsweltAdminSite,
