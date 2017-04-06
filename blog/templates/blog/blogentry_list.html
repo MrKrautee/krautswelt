@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% load i18n static %}
+{% block title %}{% trans "blog entries" %}{% endblock title %}
+{% block content %}
+<div class="container">
+    <h3>{% trans "blog entries" %}</h3>
+    <div class="panel-group">
+        {% for object in object_list %}
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <a href="{% url 'entry_detail' object.slug %}">{{ object.title }}</a> - 
+                <small class="text-muted">{{ object.pub_date }}</small>
+            </div>
+            <div class="panel-body">{{ object.excerpt }}</div>
+            <!--div class="panel-footer"></div-->
+        </div>
+        {% endfor %}
+    </div><!-- panel group -->
+</div><!-- container -->
+{% endblock %}

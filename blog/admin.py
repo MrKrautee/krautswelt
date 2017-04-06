@@ -42,8 +42,8 @@ def approve_comment(modeladmin, request, queryset):
             comment.approve()
 approve_comment.short_description = _("approve comment(s)")
 class CommentAdmin(ModelAdmin):
-    list_filter = ('is_active',)
-    list_display = ('name', 'email', 'comment_excerpt', 'website', 'date')
+    list_filter = ('is_active', )
+    list_display = ('name', 'email', 'comment_excerpt', 'website', 'date', )
     actions = ( approve_comment, )
 
 # in case that krautswelt is installed.

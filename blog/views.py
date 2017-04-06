@@ -3,6 +3,7 @@ from django.shortcuts import render
 from django.shortcuts import get_object_or_404
 from django.forms import ModelForm
 from django.forms import HiddenInput
+from django.views.generic import ListView
 from django.http import JsonResponse, HttpResponseNotAllowed
 from django.core.urlresolvers import reverse
 from django.template.loader import render_to_string
@@ -91,8 +92,9 @@ def entry_detail(request, slug):
     comments = Comment.objects.get_comments(entry)
     comment_form = CommentForm(initial={'parent': entry, })
     comment_form_captcha = CaptchaCommentForm(initial={'parent': entry, })
-
-    return render(request, 'blog/blogentry_detail.html', {
+    template_name = ('%s/%s_detail.html') % (BlogEntry._meta.app_label,
+                                             BlogEntry._meta.model_name)
+    return render(request, template_name), {
         'object': entry,
         'contents': contents,
         'comments': comments,
@@ -101,8 +103,12 @@ def entry_detail(request, slug):
     })
 
 
-def entry_list(request):
-    pass
+class BlogEntryListView(ListView):
+
+    queryset = BlogEntry.objects.get_active()
+    template_name = '%s/%s_list.html' % (BlogEntry._meta.app_label,
+                                         BlogEntry._meta.model_name) 
+
 
 
 def category_list(request):
