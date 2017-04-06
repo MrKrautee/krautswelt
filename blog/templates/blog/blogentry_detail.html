@@ -1,8 +1,7 @@
 {% extends "base.html" %}
 {% load i18n static %}
 {% block title %}Blog - {{ object.title }}{% endblock title %}
-{% block extrastyle %}
-<link rel="stylesheet" href={% static "/blog/css/blog.css" %}>
+{% block extrastyle %}{{ block.super }}
 {% endblock extrastyle %}
 {% block extrajs %}
 <script src={% static "/helpers/js/forms.js" %}></script>
@@ -24,7 +23,7 @@
 	</div>
 	<div id="comment_form_panel" class="panel panel-default">
 		<div class="panel-heading">
-			<span class="glyphicon glyphicon-comment"></span> 
+			<span class="glyphicon glyphicon-comment text-info"></span> 
 			<a data-toggle="collapse" data-parent="#accordion" href="#collapse1">comment this article</a>
 		</div>
 		<div id="collapse1" class="panel-collapse collapse">

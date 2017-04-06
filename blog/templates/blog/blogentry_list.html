@@ -11,8 +11,10 @@
                 <a href="{% url 'entry_detail' object.slug %}">{{ object.title }}</a> - 
                 <small class="text-muted">{{ object.pub_date }}</small>
             </div>
-            <div class="panel-body">{{ object.excerpt }}</div>
-            <!--div class="panel-footer"></div-->
+            <div class="panel-body">{{ object.get_excerpt|truncatewords:77 }}</div>
+            <div class="panel-footer small-panel-footer">
+			<span class="glyphicon glyphicon-comment text-info"></span> 
+            <small class="text-muted">{{ object.get_comments_count }}</small></div>
         </div>
         {% endfor %}
     </div><!-- panel group -->

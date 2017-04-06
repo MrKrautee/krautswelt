@@ -34,7 +34,7 @@ class BlogEntryAdmin(ContentEditor):
     ordering = ('title', 'pub_date', 'create_date')
 
     def view_on_site(self, obj):
-        url = reverse('entry-detail', kwargs={'slug': obj.slug})
+        url = reverse('entry_detail', kwargs={'slug': obj.slug})
         return url
 
 def approve_comment(modeladmin, request, queryset):

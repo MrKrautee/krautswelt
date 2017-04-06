@@ -48,8 +48,8 @@ img.captcha {
 /* START comment list */
 .comment-header { }
 .comment-body { }
-.comment-footer { 
+/* END comment list */
+.small-panel-footer { 
     padding: 1px 15px;
 }
-/* END comment list */
 

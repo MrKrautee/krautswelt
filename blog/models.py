@@ -1,6 +1,7 @@
 import datetime
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
+from django.utils.html import strip_tags, mark_safe
 
 from content_editor.models import create_plugin_base, Region
 
@@ -28,6 +29,35 @@ class BlogEntryManager(models.Manager):
         qs = qs.order_by('-pub_date')
         return qs
 
+    def get_for_year(self, year):
+        qs = self.get_active()
+        qs = qs.filter(pub_date__year=year)
+        qs.order_by('-pub_date')
+        return qs
+
+    def get_for_month(self, year, month):
+        qs = self.get_active()
+        qs = qs.filter(pub_date__year=year, pub_date__month=month)
+        qs.order_by('-pub_date')
+        return qs
+
+    def get_for_day(self, year, month, day):
+        qs = self.get_active()
+        qs = qs.filter(pub_date__year=year, pub_date__month=month,
+                       pub_date__day=day)
+        qs.order_by('-pub_date')
+        return qs
+
+    # get all years with active comments
+    def get_years(self):
+        qs = self.get_active()
+        return qs.dates('pub_date', 'year')
+
+    # get year, month dict with active comments
+    def get_months(self):
+        qs = self.get_active()
+        return qs.dates('pub_date', 'month')
+
 
 class BlogEntry(models.Model):
 
@@ -49,9 +79,27 @@ class BlogEntry(models.Model):
 
     objects = BlogEntryManager()
 
-    def excerpt(self):
-        # @TODO:
-            pass
+    def get_excerpt(self, length=777):
+        richtxt_contents = self.blog_richtextcontent_set.all()
+        richtxt_contents = richtxt_contents.order_by('ordering')
+        if richtxt_contents.count():
+            return mark_safe(richtxt_contents[0].as_str()[:length])
+        return ''
+
+    def get_comments(self):
+        qs = self.comment_set.filter(is_active=True)
+        qs = qs.order_by('-pub_date')
+        return qs
+
+    def get_comments_count(self):
+        return self.get_comments().count()
+
+    def get_first_image(self):
+        qs = self.blog_imagecontent_set.order_by('ordering')
+        if qs.count():
+            return qs[0]
+        return None
+
 
     def __str__(self):
         return "%s" % self.title[:20]
@@ -74,7 +122,9 @@ class ImageContent(AbstractImageContent, BlogEntryContent):
 
 
 class RichTextContent(AbstractRichTextContent, BlogEntryContent):
-    pass
+
+    def as_str(self):
+        return mark_safe(strip_tags(self.text))
 
 
 class CommentManager(models.Manager):

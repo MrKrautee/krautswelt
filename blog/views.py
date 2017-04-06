@@ -1,6 +1,6 @@
 from django.utils.translation import ugettext_lazy as _
 from django.shortcuts import render
-from django.shortcuts import get_object_or_404
+from django.shortcuts import get_object_or_404, get_list_or_404
 from django.forms import ModelForm
 from django.forms import HiddenInput
 from django.views.generic import ListView
@@ -94,7 +94,7 @@ def entry_detail(request, slug):
     comment_form_captcha = CaptchaCommentForm(initial={'parent': entry, })
     template_name = ('%s/%s_detail.html') % (BlogEntry._meta.app_label,
                                              BlogEntry._meta.model_name)
-    return render(request, template_name), {
+    return render(request, template_name, {
         'object': entry,
         'contents': contents,
         'comments': comments,
@@ -107,9 +107,51 @@ class BlogEntryListView(ListView):
 
     queryset = BlogEntry.objects.get_active()
     template_name = '%s/%s_list.html' % (BlogEntry._meta.app_label,
-                                         BlogEntry._meta.model_name) 
+                                         BlogEntry._meta.model_name)
+
+class BlogEntryYearArchive(BlogEntryListView):
+
+    def get_queryset(self):
+        year = self.args[0]
+        qs = BlogEntry.objects.get_for_year(year)
+        return qs
 
 
+class BlogEntryMonthArchive(BlogEntryListView):
+
+    def get_queryset(self):
+        month = self.args[1]
+        year = self.args[0]
+        qs = BlogEntry.objects.get_for_month(year, month)
+        return qs
+
+
+class BlogEntryDayArchive(BlogEntryListView):
+
+    def get_queryset(self):
+        day = self.args[2]
+        month = self.args[1]
+        year = self.args[0]
+        qs = BlogEntry.objects.get_for_day(year, month, day)
+        return qs
+
+def entry_archive(request):
+
+    template_name = ('%s/%s_archive.html') % (BlogEntry._meta.app_label,
+                                             BlogEntry._meta.model_name)
+    years = BlogEntry.objects.get_years()
+    month = BlogEntry.objects.get_months()
+
+    month_plus_count = []
+    for m in month:
+        count = BlogEntry.objects.get_for_month(m.year, m.month).count()
+        tmp = {}
+        tmp['count'] = count
+        tmp['month'] = m
+        month_plus_count.append(tmp)
+
+    return render(request, template_name, {'years': years,
+                                           'month': month_plus_count})
 
 def category_list(request):
     pass
