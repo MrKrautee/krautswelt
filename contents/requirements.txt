@@ -1,6 +1,0 @@
-Django
-Pillow
-django-ckeditor
-django-content-editor
-django-versatileimagefield
---upgrade pip
