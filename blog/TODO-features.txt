@@ -1,0 +1,4 @@
+- export (all) blog articles, ie:  as text files, ?PDF files.
+- pingback
+- related articles
+- 

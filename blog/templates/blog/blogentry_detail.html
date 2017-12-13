@@ -9,31 +9,115 @@
 {% endblock extrajs %}
 
 {% block content %}
-<div class="row"><h3><a href=".">{{object.title }}</a></h3></div>
-<div class="row"><p class="text-muted small text-italic">{{object.pub_date}}</p></div>
-<div class="row"> </div>
-<div id='content' class="">
-	{{contents.main}}
-</div>
-<div id="comments" class="">
-	<h3>reactions</h3>
-	<div class="alert alert-success" style="display:none;">
-	<a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
-	comment saved. thank you for commenting! after approving your comment, it will be published.
-	</div>
-	<div id="comment_form_panel" class="panel panel-default">
-		<div class="panel-heading">
-			<span class="glyphicon glyphicon-comment text-info"></span> 
-			<a data-toggle="collapse" data-parent="#accordion" href="#collapse1">comment this article</a>
-		</div>
-		<div id="collapse1" class="panel-collapse collapse">
-			<div class="panel-body">
-				{% include "blog/comments/comment_form.html" %}
-			</div>
-		</div>
-	</div>
-	<div id="comment_list">
-		{% include "blog/comments/comment_list.html" %}
-	</div>
-</div> <!-- #comments -->
+        <div class="row">
+
+            <!-- Blog Post Content Column -->
+            <div class="col-lg-8">
+
+                <!-- Blog Post -->
+
+                <!-- Title -->
+                <h1>{{object.title }}</h1>
+                <!-- Author -->
+                <p class="lead">
+                    by <a href="#">Start Bootstrap</a>
+                </p>
+
+                <hr>
+
+                <!-- Date/Time -->
+                <p><span class="glyphicon glyphicon-time"></span>{{object.pub_date}}</p>
+
+                <hr>
+                <!-- Post Content -->
+                <p class="lead">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ducimus, vero, obcaecati, aut, error quam sapiente nemo saepe quibusdam sit excepturi nam quia corporis eligendi eos magni recusandae laborum minus inventore?</p>
+
+                <div id='content' class="">
+                    {{contents.main}}
+                </div>
+<hr>
+                <!-- Blog Comments -->
+
+                <!-- Comments Form -->
+                <div id="comments" class="">
+                    <!--h3>reactions</h3-->
+                    <div class="alert alert-success" style="display:none;">
+                    <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+                    comment saved. thank you for commenting! after approving your comment, it will be published.
+                    </div>
+                    <div id="comment_form_panel" class="panel panel-default">
+                        <div class="panel-heading">
+                            <span class="glyphicon glyphicon-comment text-info"></span> 
+                            <a data-toggle="collapse" data-parent="#accordion" href="#collapse1">comment this article</a>
+                        </div>
+                        <div id="collapse1" class="panel-collapse collapse">
+                            <div class="panel-body">
+                                {% include "blog/comments/comment_form.html" %}
+                            </div>
+                        </div>
+                    </div>
+                    <div id="comment_list">
+                        {% include "blog/comments/comment_list.html" %}
+                    </div>
+                </div> <!-- #comments -->
+            </div>
+            <!-- Blog Sidebar Widgets Column -->
+            <div class="col-md-4">
+
+                <!-- Blog Search Well -->
+                <div class="well">
+                    <h4>Blog Search</h4>
+                    <div class="input-group">
+                        <input type="text" class="form-control">
+                        <span class="input-group-btn">
+                            <button class="btn btn-default" type="button">
+                                <span class="glyphicon glyphicon-search"></span>
+                        </button>
+                        </span>
+                    </div>
+                    <!-- /.input-group -->
+                </div>
+
+                <!-- Blog Categories Well -->
+                <div class="well">
+                    <h4>Blog Categories</h4>
+                    <div class="row">
+                        <div class="col-lg-6">
+                            <ul class="list-unstyled">
+                                <li><a href="#">Category Name</a>
+                                </li>
+                                <li><a href="#">Category Name</a>
+                                </li>
+                                <li><a href="#">Category Name</a>
+                                </li>
+                                <li><a href="#">Category Name</a>
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="col-lg-6">
+                            <ul class="list-unstyled">
+                                <li><a href="#">Category Name</a>
+                                </li>
+                                <li><a href="#">Category Name</a>
+                                </li>
+                                <li><a href="#">Category Name</a>
+                                </li>
+                                <li><a href="#">Category Name</a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                    <!-- /.row -->
+                </div>
+
+                <!-- Side Widget Well -->
+                <div class="well">
+                    <h4>Side Widget Well</h4>
+                    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Inventore, perspiciatis adipisci accusamus laudantium odit aliquam repellat tempore quos aspernatur vero.</p>
+                </div>
+
+            </div>
+
+        </div>
+        <!-- /.row -->
 {% endblock %}

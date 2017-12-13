@@ -37,15 +37,16 @@ MEDIA_URL = '/media/'
 
 
 INSTALLED_APPS = [
-    'contents.apps.ContentsConfig',
+    'core.app_settings.apps.AppSettingsConfig',
     'blog.apps.BlogConfig',
+    'core.contents.apps.ContentsConfig',
+    'django.contrib.admin',
     'captcha',
     'content_editor',
     'versatileimagefield',
     'ckeditor',
     # 'debug_toolbar.apps.DebugToolbarConfig',
-    'django.contrib.admin',
-    'krautswelt',
+    #'krautswelt',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
@@ -82,7 +83,7 @@ ROOT_URLCONF = 'krautswelt.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [ os.path.join(BASE_DIR, 'templates'),],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [

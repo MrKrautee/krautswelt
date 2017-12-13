@@ -5,7 +5,7 @@ from django.utils.html import strip_tags, mark_safe
 
 from content_editor.models import create_plugin_base, Region
 
-from contents.models import AbstractImageContent, AbstractRichTextContent
+from core.contents.models import AbstractImageContent, AbstractRichTextContent
 
 
 class Category(models.Model):
@@ -24,7 +24,7 @@ class BlogEntryManager(models.Manager):
         return qs
 
     def get_active(self):
-        qs = self.get_queryset().filter(is_active=True)
+        qs = self.filter(is_active=True)
         qs = qs.filter(pub_date__lte=datetime.datetime.now())
         qs = qs.order_by('-pub_date')
         return qs
@@ -53,7 +53,7 @@ class BlogEntryManager(models.Manager):
         qs = self.get_active()
         return qs.dates('pub_date', 'year')
 
-    # get year, month dict with active comments
+    # get month with active comments
     def get_months(self):
         qs = self.get_active()
         return qs.dates('pub_date', 'month')
@@ -74,6 +74,9 @@ class BlogEntry(models.Model):
                                         blank=True)
 
     # @TODO: related_entries
+    related_entries = models.ManyToManyField("self",
+                                             related_name=_('blogentries'),
+                                             blank=True)
 
     regions = (Region(key='main', title=_('Main')), )
 

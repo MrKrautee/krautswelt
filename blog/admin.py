@@ -4,7 +4,7 @@ from django.utils.translation import ugettext_lazy as _
 
 from content_editor.admin import ContentEditor
 
-from contents.admin import create_inline
+from core.contents.admin import create_inline
 
 from .models import ImageContent, RichTextContent
 from .models import BlogEntry, Category, Comment
@@ -24,14 +24,15 @@ class BlogEntryAdmin(ContentEditor):
 
     inlines = [ImageInline, RichTextInline, ]
     readonly_fields = ('create_date', )
-    list_display = ('title', 'pub_date', 'create_date')
+    list_display = ('title', 'pub_date', 'create_date', 'slug', 'is_active')
     prepopulated_fields = {"slug": ("title",)}
     # fields =
     # fielfsets =
     view_on_site = True
-    search_fields = ('title', )
+    search_fields = ('title', 'pub_date')
     list_filter = ('pub_date', 'create_date', 'is_active')
     ordering = ('title', 'pub_date', 'create_date')
+    filter_horizontal = ('related_entries', )
 
     def view_on_site(self, obj):
         url = reverse('entry_detail', kwargs={'slug': obj.slug})
@@ -49,7 +50,7 @@ class CommentAdmin(ModelAdmin):
 # in case that krautswelt is installed.
 # indicate new comments to approve, in admin index.
 try:
-    from krautswelt.admin import admin_site
+    from core.advanced_admin.admin import admin_site
 
     def msg_new_comment(request):
         comments_qs = Comment.objects.get_unapproved()
@@ -64,6 +65,7 @@ try:
         return None
     admin_site.register_notification(Comment, msg_new_comment)
 except:
+    print("Cant register Comment Notification")
     pass
 
 site.register(Category, CategoryAdmin)

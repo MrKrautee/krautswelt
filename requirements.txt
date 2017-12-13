@@ -1,8 +1,8 @@
 Django==1.10.6
 django-debug-toolbar
 Pillow
-django-ckeditor
-django-content-editor
+django-ckeditor==5.2.1
+django-content-editor==1.0.0
 django-versatileimagefield
 --upgrade pip
 django-simple-captcha

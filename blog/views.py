@@ -1,3 +1,4 @@
+from datetime import date
 from django.utils.translation import ugettext_lazy as _
 from django.shortcuts import render
 from django.shortcuts import get_object_or_404, get_list_or_404
@@ -8,7 +9,7 @@ from django.http import JsonResponse, HttpResponseNotAllowed
 from django.core.urlresolvers import reverse
 from django.template.loader import render_to_string
 
-from contents.views import render_content_to_string
+from core.contents.views import render_content_to_string
 
 from captcha.fields import CaptchaField
 from captcha.models import CaptchaStore
@@ -108,8 +109,20 @@ class BlogEntryListView(ListView):
     queryset = BlogEntry.objects.get_active()
     template_name = '%s/%s_list.html' % (BlogEntry._meta.app_label,
                                          BlogEntry._meta.model_name)
+    allow_empty = False
+
+    def get_context_data(self, **kwargs):
+        context = super(BlogEntryListView, self).get_context_data(**kwargs)
+        context['site_title'] = _("All articles")
+        return context
+
 
 class BlogEntryYearArchive(BlogEntryListView):
+
+    def get_context_data(self, **kwargs):
+        context = super(BlogEntryYearArchive, self).get_context_data(**kwargs)
+        context['site_title'] = _('Archive for %s') % self.args[0]
+        return context
 
     def get_queryset(self):
         year = self.args[0]
@@ -119,6 +132,12 @@ class BlogEntryYearArchive(BlogEntryListView):
 
 class BlogEntryMonthArchive(BlogEntryListView):
 
+    def get_context_data(self, **kwargs):
+        context = super(BlogEntryMonthArchive, self).get_context_data(**kwargs)
+        month_name = date(day=1, month=int(self.args[1]), year=2017).strftime('%B')
+        context['site_title'] = _('Archive for %s') % month_name
+        return context
+
     def get_queryset(self):
         month = self.args[1]
         year = self.args[0]
@@ -127,6 +146,22 @@ class BlogEntryMonthArchive(BlogEntryListView):
 
 
 class BlogEntryDayArchive(BlogEntryListView):
+
+    def get_context_data(self, **kwargs):
+        context = super(BlogEntryDayArchive, self).get_context_data(**kwargs)
+        day_date = date(day=int(self.args[2]), month=int(self.args[1]),
+                          year=int(self.args[0]))
+
+        title_attrs = {
+            'month_name' : day_date.strftime('%B'),
+            'day_name' : day_date.strftime('%A'),
+            'day' : self.args[2],
+            'year' : self.args[0],
+        }
+        context['site_title'] = _(
+            'Archive for %(day_name)s, %(day)s. %(month_name)s %(year)s'
+        ) % title_attrs
+        return context
 
     def get_queryset(self):
         day = self.args[2]

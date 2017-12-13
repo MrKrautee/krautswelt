@@ -1,4 +1,4 @@
-"""green_life URL Configuration
+"""krautswelt URL Configuration
 
 The `urlpatterns` list routes URLs to views. For more information please see:
     https://docs.djangoproject.com/en/1.10/topics/http/urls/
@@ -18,9 +18,7 @@ Including another URLconf
 from django.conf import settings
 from django.conf.urls import include, url
 from django.conf.urls.static import static
-from django.contrib import admin
-
-from krautswelt.admin import admin_site
+from core.advanced_admin.admin import admin_site
 
 media_urls = static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 static_urls = static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
