@@ -2,8 +2,16 @@ from functools import update_wrapper
 from django.utils.translation import ugettext as _, ugettext_lazy
 from django.contrib import admin
 
+class AdminSiteWrapper(object):
+    """  MISSING """
+    def __init__(self, instance):
+        self._instance = instance
 
-class AdvancedAdminSite(object):
+    def __getattr__(self, name):
+        return self._instance.__getattribute__(name)
+
+
+class AdvancedAdminSite(AdminSiteWrapper):
     """Adds funtionality to the 'normal' admin. BUt you can use the 'normal' admin
     for registering models. So there is no need to change admin.py from
     existing apps.
@@ -146,10 +154,6 @@ class AdvancedAdminSite(object):
     def urls(self):
         return self.get_urls(), 'admin', self.name
 
-    def __getattr__(self, name):
-        return self._instance.__getattribute__(name)
-
-
-site = admin.site
-admin_site = AdvancedAdminSite(site)
+default_admin_site = admin.site
+admin_site = AdvancedAdminSite(default_admin_site)
 

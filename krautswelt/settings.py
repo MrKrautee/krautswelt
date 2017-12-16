@@ -37,6 +37,7 @@ MEDIA_URL = '/media/'
 
 
 INSTALLED_APPS = [
+    'core.apps.CoreConfig',
     'core.app_settings.apps.AppSettingsConfig',
     'blog.apps.BlogConfig',
     'core.contents.apps.ContentsConfig',
@@ -109,6 +110,7 @@ DATABASES = {
     }
 }
 
+AUTH_USER_MODEL='core.User'
 
 # Password validation
 # https://docs.djangoproject.com/en/1.10/ref/settings/#auth-password-validators
