@@ -62,7 +62,7 @@ def comment_form_check(request):
             else:
                 key = CaptchaStore.generate_key()
                 url = captcha_image_url(key)
-                audio_url = app_reverse('captcha-audio', args=[key])
+                audio_url = reverse('captcha-audio', args=[key])
                 reload_popover_html = render_to_string(
                     'captcha/reload_popover.html',
                                 {})

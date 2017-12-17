@@ -6,11 +6,7 @@ from content_editor.admin import ContentEditor
 from core.contents.admin import create_inlines
 from core.contents import app_reverse
 
-#from .models import BlogImageContent, BlogRichTextContent
 from .models import BlogEntry, Category, Comment
-
-# ImageInline = create_inline(model=BlogImageContent)
-# RichTextInline = create_inline(model=BlogRichTextContent)
 
 blog_content_inlines = create_inlines(BlogEntry)
 class CategoryAdmin(ModelAdmin):

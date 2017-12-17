@@ -51,7 +51,6 @@ class _ContentHandler(object):
             app_contents = self._get_contents(model, ct)
             if app_contents:
                 return app_contents[0]
-
             return None
         return None
 
@@ -64,9 +63,7 @@ class _ContentHandler(object):
             all_contents += list(contents)
         return all_contents
 
-
 content_register = _ContentHandler()
-
 
 def create_content_type(cls, content_type, **kwargs):
     name = _mk_ctype_name(cls, content_type)
