@@ -66,7 +66,7 @@ class RichTextContent(models.Model):
         # Return the first few words of the content (with tags stripped)
         return Truncator(strip_tags(self.text)).words(10, truncate=' ...')
 
-    def render(self, request, **kwargs):
+    def render(self, *args, **kwargs):
         return mark_safe(self.text)
 
 class ApplicationContent(models.Model):
@@ -79,8 +79,8 @@ class ApplicationContent(models.Model):
 
     def render(self, request, **kwargs):
         full_path = request.path
-        content_base = kwargs['base_content']
-        page_path = content_base.parent.get_absolute_url()
+        cnt_info = kwargs['content_info']
+        page_path = cnt_info.parent.get_absolute_url()
         app_path = full_path.replace(page_path, '')
         fn, args, kwargs = resolve("/%s"%app_path, self.urls_conf)
         return fn(request, *args, **kwargs)

@@ -8,6 +8,7 @@ from core.contents import create_content_type
 from core.contents.models import ImageContent
 from core.contents.models import RichTextContent
 from core.contents.models import ApplicationContent
+from core.contents import app_reverse
 
 class PageManager(models.Manager):
     pass
@@ -54,6 +55,8 @@ class Page(MPTTModel):
     @classmethod
     def create_content_type(cls, content_type, **kwargs):
         return create_content_type(cls, content_type, **kwargs)
+
+
 
 
 

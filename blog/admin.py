@@ -1,11 +1,9 @@
 from django.contrib.admin import ModelAdmin, site
-from django.urls import reverse
 from django.utils.translation import ugettext_lazy as _
 
 from content_editor.admin import ContentEditor
-from core.contents import app_reverse
 from core.contents.admin import create_inline
-from core.pages.models import Page
+from core.contents import app_reverse
 
 from .models import BlogImageContent, BlogRichTextContent
 from .models import BlogEntry, Category, Comment
@@ -29,15 +27,14 @@ class BlogEntryAdmin(ContentEditor):
     prepopulated_fields = {"slug": ("title",)}
     # fields =
     # fielfsets =
-    view_on_site = False
+    view_on_site = True
     search_fields = ('title', 'pub_date')
     list_filter = ('pub_date', 'create_date', 'is_active')
     ordering = ('title', 'pub_date', 'create_date')
     filter_horizontal = ('related_entries', )
 
     def view_on_site(self, obj):
-        url = app_reverse(Page, 'entry_detail', kwargs={'slug': obj.slug})
-        #url = reverse('entry_detail', kwargs={'slug': obj.slug})
+        url = app_reverse('entry_detail', kwargs={'slug': obj.slug})
         return url
 
 def approve_comment(modeladmin, request, queryset):

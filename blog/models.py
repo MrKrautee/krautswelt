@@ -84,10 +84,10 @@ class BlogEntry(models.Model):
     objects = BlogEntryManager()
 
     def get_excerpt(self, length=777):
-        richtxt_contents = self.blog_richtextcontent_set.all()
+        richtxt_contents = self.blog_blogentryrichtextcontent_set.all()
         richtxt_contents = richtxt_contents.order_by('ordering')
         if richtxt_contents.count():
-            return mark_safe(richtxt_contents[0].as_str()[:length])
+            return mark_safe(richtxt_contents[0].render()[:length])
         return ''
 
     def get_comments(self):

@@ -1,4 +1,4 @@
-{% load i18n static %}<!DOCTYPE html>
+{% load i18n static contents %}<!DOCTYPE html>
 {% get_current_language as LANGUAGE_CODE %}{% get_current_language_bidi as LANGUAGE_CODE_BIDI %}
 <html lang="{{ LANGUAGE_CODE|default:"en-us" }}" {% if LANGUAGE_BIDI %}dir="rtl"{% endif %}>
     <head>
@@ -43,10 +43,10 @@
             <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
                 <ul class="nav navbar-nav">
                     <li>
-			    <a href="{% url 'entry_list' %}">List</a>
+			    <a href="{% app_url 'entry_list' %}">List</a>
                     </li>
                     <li>
-			    <a href="{% url 'entry_archive' %}">Archive</a>
+			    <a href="{% app_url 'entry_archive' %}">Archive</a>
                     </li>
                     <li>
                         <a href="#">Contact</a>

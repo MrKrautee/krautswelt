@@ -2,9 +2,10 @@ from django.shortcuts import render
 from django.http.response import Http404
 
 from django.shortcuts import get_object_or_404, get_list_or_404
-from core.contents.views import render_content_to_string
+#from core.contents.views import render_content_to_string
+from core.contents.views import render_content
 from .models import Page
-from .models import PageRichTextContent, PageImageContent
+#from .models import PageRichTextContent, PageImageContent
 
 
 def page_view(request, full_slug):
@@ -27,15 +28,4 @@ def page_view(request, full_slug):
 
     if not page:
         return Http404
-    app_contents = page.pages_pageapplicationcontent_set.all()
-    if app_contents:
-        return app_contents[0].render(request)
-
-
-    contents = render_content_to_string(request, page,
-                                        [PageRichTextContent, PageImageContent])
-    template_name = "pages/page.html"
-    return render(request, template_name, {
-        'page': page,
-        'contents': contents,
-    })
+    return render_content(page, request, template_name="pages/page.html")

@@ -10,6 +10,7 @@ from django.core.urlresolvers import reverse
 from django.template.loader import render_to_string
 
 from core.contents.views import render_content_to_string
+from core.contents import app_reverse
 
 from captcha.fields import CaptchaField
 from captcha.models import CaptchaStore
@@ -62,7 +63,7 @@ def comment_form_check(request):
             else:
                 key = CaptchaStore.generate_key()
                 url = captcha_image_url(key)
-                audio_url = reverse('captcha-audio', args=[key])
+                audio_url = app_reverse('captcha-audio', args=[key])
                 reload_popover_html = render_to_string(
                     'captcha/reload_popover.html',
                                 {})
@@ -88,8 +89,7 @@ def comment_form_check(request):
 
 def entry_detail(request, slug):
     entry = get_object_or_404(BlogEntry, slug=slug)
-    contents = render_content_to_string(request, entry,
-                                        [BlogRichTextContent, BlogImageContent])
+    contents = render_content_to_string(request, entry)
     comments = Comment.objects.get_comments(entry)
     comment_form = CommentForm(initial={'parent': entry, })
     comment_form_captcha = CaptchaCommentForm(initial={'parent': entry, })
