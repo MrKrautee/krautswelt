@@ -1,17 +1,18 @@
 from django.contrib.admin import ModelAdmin, site
 from django.utils.translation import ugettext_lazy as _
+from django.urls import reverse
 
 from content_editor.admin import ContentEditor
-from core.contents.admin import create_inline
+from core.contents.admin import create_inlines
 from core.contents import app_reverse
 
-from .models import BlogImageContent, BlogRichTextContent
+#from .models import BlogImageContent, BlogRichTextContent
 from .models import BlogEntry, Category, Comment
 
-ImageInline = create_inline(model=BlogImageContent)
-RichTextInline = create_inline(model=BlogRichTextContent)
+# ImageInline = create_inline(model=BlogImageContent)
+# RichTextInline = create_inline(model=BlogRichTextContent)
 
-
+blog_content_inlines = create_inlines(BlogEntry)
 class CategoryAdmin(ModelAdmin):
     prepopulated_fields = {"slug": ("name",)}
     list_display = ('name', 'slug', )
@@ -21,7 +22,7 @@ class CategoryAdmin(ModelAdmin):
 
 class BlogEntryAdmin(ContentEditor):
 
-    inlines = [ImageInline, RichTextInline, ]
+    inlines = blog_content_inlines # [ImageInline, RichTextInline, ]
     readonly_fields = ('create_date', )
     list_display = ('title', 'pub_date', 'create_date', 'slug', 'is_active')
     prepopulated_fields = {"slug": ("title",)}

@@ -109,8 +109,8 @@ class BlogEntry(models.Model):
         return "%s" % self.title[:20]
 
 
-BlogImageContent = create_content_type(BlogEntry, ImageContent)
-BlogRichTextContent = create_content_type(BlogEntry, RichTextContent)
+create_content_type(BlogEntry, ImageContent)
+create_content_type(BlogEntry, RichTextContent)
 
 class CommentManager(models.Manager):
 

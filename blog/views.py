@@ -17,7 +17,6 @@ from captcha.models import CaptchaStore
 from captcha.helpers import captcha_image_url
 
 from .models import BlogEntry
-from .models import BlogRichTextContent, BlogImageContent
 from .models import Comment
 
 

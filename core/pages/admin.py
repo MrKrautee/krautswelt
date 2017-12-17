@@ -2,16 +2,10 @@ from django.contrib import admin
 from django.utils.translation import ugettext_lazy as _
 
 from content_editor.admin import ContentEditor
-
-from core.contents.admin import create_inline
+from core.contents.admin import create_inlines
 from .models import Page
-from .models import PageImageContent
-from .models import PageRichTextContent
-from .models import PageApplicationContent
 
-ImageInline = create_inline(model=PageImageContent)
-RichTextInline = create_inline(model=PageRichTextContent)
-ApplicationInline = create_inline(model=PageApplicationContent)
+content_inlines = create_inlines(Page)
 class PageAdmin(ContentEditor):
 
     fieldsets = (
@@ -36,7 +30,7 @@ class PageAdmin(ContentEditor):
         })
 
     )
-    inlines = [ImageInline, RichTextInline, ApplicationInline]
+    inlines = content_inlines 
     readonly_fields = ('create_date', )
     prepopulated_fields = {"slug": ("title",)}
     list_display = ('title', 'is_active', 'ordering', 'parent', 'get_children', 'pub_date')

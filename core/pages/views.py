@@ -5,7 +5,6 @@ from django.shortcuts import get_object_or_404, get_list_or_404
 #from core.contents.views import render_content_to_string
 from core.contents.views import render_content
 from .models import Page
-#from .models import PageRichTextContent, PageImageContent
 
 
 def page_view(request, full_slug):

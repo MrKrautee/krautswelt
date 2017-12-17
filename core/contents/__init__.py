@@ -7,12 +7,12 @@ from django.db.models import Count
 def _mk_ctype_name(model_cls, content_type):
     name = "%s%s" %  (model_cls.__name__, content_type.__name__)
     return name
-#mk_ctype_name = _mk_ctype_name
+
 def _mk_related_ctype_name(cls, content_type):
     name = _mk_ctype_name(cls, content_type)
     related_name='%s_%s_set'%(cls._meta.app_label, name.lower())
     return related_name
-#mk_related_ctype_name = _mk_related_ctype_name
+
 class _ContentHandler(object):
     _ctype_register = {} # { model: [ctype1, ctype2] }
 
@@ -48,7 +48,11 @@ class _ContentHandler(object):
             for ct in ctypes:
                 if ct.__name__ == app_cnt_name:
                     ctype = ct
-            return self._get_contents(model, ct)[0]
+            app_contents = self._get_contents(model, ct)
+            if app_contents:
+                return app_contents[0]
+
+            return None
         return None
 
     def get_contents(self, model):
@@ -112,7 +116,7 @@ def create_content_type(cls, content_type, **kwargs):
     content_register.register_ctype(cls, ctype)
     return ctype
 
-def app_reverse_model(model_cls, view_name, args=None, kwargs=None, content_type=None):
+def _app_reverse_model(model_cls, view_name, args=None, kwargs=None, content_type=None):
     from .models import ApplicationContent
     content_type = content_type or ApplicationContent
     ctype_name = _mk_ctype_name(model_cls, content_type)
@@ -121,7 +125,6 @@ def app_reverse_model(model_cls, view_name, args=None, kwargs=None, content_type
     url = None
     app_content = None
     for q in qs:
-        print(q.num_appcontents)
         if q.num_appcontents:
             try:
                 app_content = q.__getattribute__(related_name).all()[0]
@@ -138,12 +141,12 @@ def app_reverse_model(model_cls, view_name, args=None, kwargs=None, content_type
                              (view_name, str(args), str(kwargs)))
     return "%s%s" % (app_content.parent.get_absolute_url(), url[1:])
 
-def app_reverse_full(view_name, args=None, kwargs=None, content_type=None):
+def _app_reverse_full(view_name, args=None, kwargs=None, content_type=None):
     model_contents = content_register.get_ctypes()
     url = None
     try:
         for model, contens in model_contents.items():
-            url = app_reverse_model(model, view_name, args, kwargs, content_type)
+            url = _app_reverse_model(model, view_name, args, kwargs, content_type)
     except Exception as e:
         pass
     if not url:
@@ -153,8 +156,8 @@ def app_reverse_full(view_name, args=None, kwargs=None, content_type=None):
 
 def app_reverse(*args, **kwargs):
     if len(args) == 2:
-        return app_reverse_model(*args, **kwargs)
+        return _app_reverse_model(*args, **kwargs)
     elif len(args) == 1:
-        return app_reverse_full(*args, **kwargs)
+        return _app_reverse_full(*args, **kwargs)
     raise ValueError("need 1 or 2 positional arguments.")
 

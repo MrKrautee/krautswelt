@@ -22,7 +22,8 @@ def render_content_to_string(request, parent_object, contents_cls_list=None):
 
 def render_content(model, request, template_name=None):
     app_content = content_register.get_app_content(model)
-    return app_content.render(request)
+    if app_content:
+        return app_content.render(request)
 
     contents = render_content_to_string(request, model)
     return render(request, template_name, {
@@ -30,16 +31,3 @@ def render_content(model, request, template_name=None):
         'contents': contents,
     })
 
-#def render(self, request, **kwargs):
-#    # context = kwargs['context']
-#    context = { }
-#    context.update({'image_content': self, })
-#    # kwargs['context'] = context
-#    return render_to_string('blog/content/image.html',
-#                            context=context, request=request
-#                            )# request=request
-#    return format_html(
-#    '<figure><img src="{}" alt=""/><figcaption>{}</figcaption></figure>',
-#    self.image.thumbnail['400x400'].url,
-#    self.caption,
-#)

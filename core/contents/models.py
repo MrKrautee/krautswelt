@@ -56,10 +56,8 @@ class ImageContent(models.Model):
         content_name = str(self.__class__.__name__).lower()
         template = '%s/content/%s/%s.html' % (app_label, self.region,
                                               content_name)
-        print(template)
         html = render_to_string(template, request=request,
                                 context={'object':self, })
-        print(html)
         return mark_safe(html)
 
 
@@ -81,7 +79,6 @@ class RichTextContent(models.Model):
 class ApplicationContent(models.Model):
     @classmethod
     def init(cls, apps = ()):
-        print(apps)
         choices = [ (k, v) for k, v in apps ]
         cls.add_to_class('urls_conf', models.CharField(max_length=100,
                                                        choices=choices))

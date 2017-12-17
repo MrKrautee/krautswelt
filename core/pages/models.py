@@ -60,36 +60,10 @@ class Page(MPTTModel):
 
 
 
-PageRichTextContent=Page.create_content_type(RichTextContent)
-PageImageContent=Page.create_content_type(ImageContent)
-PageApplicationContent = Page.create_content_type(
-    ApplicationContent, apps=(('blog.urls',_("Blog")),)
-                                                 )
+Page.create_content_type(RichTextContent)
+Page.create_content_type(ImageContent)
+Page.create_content_type(ApplicationContent, apps=(('blog.urls',_("Blog")),))
 
 
 
-#PageContent = create_plugin_base(Page)
-#
-#class ImageContent(AbstractImageContent, PageContent):
-#
-#    LEFT = 'l'
-#    RIGHT = 'r'
-#    NONE = 'n'
-#
-#    IMAGE_ALIGN_CHOICES = ((LEFT, 'left'), (RIGHT, 'right'), (NONE, 'none'))
-#
-#    css_float = models.CharField(_('css float'),
-#                                 max_length=1,
-#                                 choices=IMAGE_ALIGN_CHOICES,
-#                                 default=RIGHT)
-#
-#
-#class RichTextContent(AbstractRichTextContent, PageContent):
-#
-#    def as_str(self):
-#        return mark_safe(strip_tags(self.text))
-#
-#class ApplictionContent(PageContent):
-#    # @TODO
-#    pass
-#
+
