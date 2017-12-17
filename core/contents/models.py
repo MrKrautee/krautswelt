@@ -72,15 +72,15 @@ class RichTextContent(models.Model):
 class ApplicationContent(models.Model):
     @classmethod
     def init(cls, apps = ()):
+        print(apps)
         choices = [ (k, v) for k, v in apps ]
         cls.add_to_class('urls_conf', models.CharField(max_length=100,
                                                        choices=choices))
 
     def render(self, request, **kwargs):
-        base_content = kwargs['base_content']
-        print("parent %s" % str(base_content.parent))
         full_path = request.path
-        page_path = base_content.parent.get_absolute_url()
+        content_base = kwargs['base_content']
+        page_path = content_base.parent.get_absolute_url()
         app_path = full_path.replace(page_path, '')
         fn, args, kwargs = resolve("/%s"%app_path, self.urls_conf)
         return fn(request, *args, **kwargs)
