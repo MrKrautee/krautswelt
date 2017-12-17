@@ -103,8 +103,9 @@ def create_content_type(cls, content_type, **kwargs):
     }
     try:
         content_type.init(**kwargs)
-    except Exception as e:
-        print(e)
+    except AttributeError as e:
+        if 'init' not in str(e):
+            raise e
     ctype = type(name, (content_type,), attrs)
 
     def render(self, *args, **kwargs):
