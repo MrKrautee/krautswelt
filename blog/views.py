@@ -16,7 +16,7 @@ from captcha.models import CaptchaStore
 from captcha.helpers import captcha_image_url
 
 from .models import BlogEntry
-from .models import RichTextContent, ImageContent
+from .models import BlogRichTextContent, BlogImageContent
 from .models import Comment
 
 
@@ -89,7 +89,7 @@ def comment_form_check(request):
 def entry_detail(request, slug):
     entry = get_object_or_404(BlogEntry, slug=slug)
     contents = render_content_to_string(request, entry,
-                                        [RichTextContent, ImageContent])
+                                        [BlogRichTextContent, BlogImageContent])
     comments = Comment.objects.get_comments(entry)
     comment_form = CommentForm(initial={'parent': entry, })
     comment_form_captcha = CaptchaCommentForm(initial={'parent': entry, })

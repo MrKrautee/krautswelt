@@ -6,11 +6,11 @@ from content_editor.admin import ContentEditor
 
 from core.contents.admin import create_inline
 
-from .models import ImageContent, RichTextContent
+from .models import BlogImageContent, BlogRichTextContent
 from .models import BlogEntry, Category, Comment
 
-ImageInline = create_inline(model=ImageContent)
-RichTextInline = create_inline(model=RichTextContent)
+ImageInline = create_inline(model=BlogImageContent)
+RichTextInline = create_inline(model=BlogRichTextContent)
 
 
 class CategoryAdmin(ModelAdmin):
@@ -28,15 +28,15 @@ class BlogEntryAdmin(ContentEditor):
     prepopulated_fields = {"slug": ("title",)}
     # fields =
     # fielfsets =
-    view_on_site = True
+    view_on_site = False
     search_fields = ('title', 'pub_date')
     list_filter = ('pub_date', 'create_date', 'is_active')
     ordering = ('title', 'pub_date', 'create_date')
     filter_horizontal = ('related_entries', )
 
-    def view_on_site(self, obj):
-        url = reverse('entry_detail', kwargs={'slug': obj.slug})
-        return url
+    #def view_on_site(self, obj):
+    #    url = reverse('entry_detail', kwargs={'slug': obj.slug})
+    #    return url
 
 def approve_comment(modeladmin, request, queryset):
         for comment in queryset:

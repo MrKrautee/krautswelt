@@ -1,4 +1,5 @@
 from django.db import models
+from django.urls import resolve
 
 from django.utils.text import Truncator
 from django.utils.translation import ugettext_lazy as _
@@ -9,7 +10,7 @@ from ckeditor.fields import RichTextField
 from versatileimagefield.fields import PPOIField, VersatileImageField
 
 
-class AbstractImageContent(models.Model):
+class ImageContent(models.Model):
 
     """
     Image plugin
@@ -36,21 +37,28 @@ class AbstractImageContent(models.Model):
     ppoi = PPOIField(_('primary point of interest'))
     caption = models.CharField( _('caption'), max_length=200, blank=True)
 
+    IMAGE_ALIGN_CHOICES = (('l', 'left'), ('r', 'right'), ('n', 'none'))
+    css_float = models.CharField(_('css float'),
+                                 max_length=1,
+                                 choices=IMAGE_ALIGN_CHOICES,
+                                 default='r')
+
     class Meta:
-        abstract = True
         verbose_name = _('image')
         verbose_name_plural = _('images')
 
     def __str__(self):
         return self.image.name
 
+    def render(self, request, **kwargs):
+        pass
 
-class AbstractRichTextContent(models.Model):
+
+class RichTextContent(models.Model):
 
     text = RichTextField(_('text'), config_name='richtext-content')
 
     class Meta:
-        abstract = True
         verbose_name = _('rich text')
         verbose_name_plural = _('rich texts')
 
@@ -58,5 +66,23 @@ class AbstractRichTextContent(models.Model):
         # Return the first few words of the content (with tags stripped)
         return Truncator(strip_tags(self.text)).words(10, truncate=' ...')
 
-    def html(self):
+    def render(self, request, **kwargs):
         return mark_safe(self.text)
+
+class ApplicationContent(models.Model):
+    @classmethod
+    def init(cls, apps = ()):
+        choices = [ (k, v) for k, v in apps ]
+        cls.add_to_class('urls_conf', models.CharField(max_length=100,
+                                                       choices=choices))
+
+    def render(self, request, **kwargs):
+        base_content = kwargs['base_content']
+        print("parent %s" % str(base_content.parent))
+        full_path = request.path
+        page_path = base_content.parent.get_absolute_url()
+        app_path = full_path.replace(page_path, '')
+        fn, args, kwargs = resolve("/%s"%app_path, self.urls_conf)
+        return fn(request, *args, **kwargs)
+
+

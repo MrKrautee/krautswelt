@@ -5,6 +5,6 @@ from content_editor.admin import ContentEditorInline
 
 def create_inline(**kwargs):
     '''
-        ImageInline = create_inline(model=ImageContent) 
+        ImageInline = create_inline(model=ImageContent)
     '''
     return ContentEditorInline.create(model=kwargs['model'])

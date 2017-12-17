@@ -23,9 +23,10 @@ from core.advanced_admin.admin import admin_site
 media_urls = static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 static_urls = static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
 urlpatterns = [
-    url(r'^blog/', include('blog.urls')),
+    #url(r'^blog/', include('blog.urls')),
     url(r'^captcha/', include('captcha.urls')),
     url(r'^admin/', admin_site.urls),
+    url('', include('core.pages.urls')),
 ]
 
 urlpatterns += media_urls

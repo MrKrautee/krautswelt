@@ -6,3 +6,4 @@ django-content-editor==1.0.0
 django-versatileimagefield
 --upgrade pip
 django-simple-captcha
+django-mptt

@@ -5,7 +5,8 @@ from django.utils.html import strip_tags, mark_safe
 
 from content_editor.models import create_plugin_base, Region
 
-from core.contents.models import AbstractImageContent, AbstractRichTextContent
+from core.contents import create_content_type
+from core.contents.models import ImageContent, RichTextContent
 
 
 class Category(models.Model):
@@ -107,28 +108,9 @@ class BlogEntry(models.Model):
     def __str__(self):
         return "%s" % self.title[:20]
 
-BlogEntryContent = create_plugin_base(BlogEntry)
 
-
-class ImageContent(AbstractImageContent, BlogEntryContent):
-
-    LEFT = 'l'
-    RIGHT = 'r'
-    NONE = 'n'
-
-    IMAGE_ALIGN_CHOICES = ((LEFT, 'left'), (RIGHT, 'right'), (NONE, 'none'))
-
-    css_float = models.CharField(_('css float'),
-                                 max_length=1,
-                                 choices=IMAGE_ALIGN_CHOICES,
-                                 default=RIGHT)
-
-
-class RichTextContent(AbstractRichTextContent, BlogEntryContent):
-
-    def as_str(self):
-        return mark_safe(strip_tags(self.text))
-
+BlogImageContent = create_content_type(BlogEntry, ImageContent)
+BlogRichTextContent = create_content_type(BlogEntry, RichTextContent)
 
 class CommentManager(models.Manager):
 

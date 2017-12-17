@@ -39,9 +39,11 @@ MEDIA_URL = '/media/'
 INSTALLED_APPS = [
     'core.apps.CoreConfig',
     'core.app_settings.apps.AppSettingsConfig',
-    'blog.apps.BlogConfig',
     'core.contents.apps.ContentsConfig',
+    'core.pages.apps.PagesConfig',
+    'blog.apps.BlogConfig',
     'django.contrib.admin',
+    'mptt',
     'captcha',
     'content_editor',
     'versatileimagefield',
