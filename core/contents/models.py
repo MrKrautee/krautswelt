@@ -5,6 +5,7 @@ from django.utils.text import Truncator
 from django.utils.translation import ugettext_lazy as _
 from django.utils.html import strip_tags
 from django.utils.html import mark_safe
+from django.template.loader import render_to_string
 
 from ckeditor.fields import RichTextField
 from versatileimagefield.fields import PPOIField, VersatileImageField
@@ -51,7 +52,15 @@ class ImageContent(models.Model):
         return self.image.name
 
     def render(self, request, **kwargs):
-        pass
+        app_label = self.__class__._meta.app_label
+        content_name = str(self.__class__.__name__).lower()
+        template = '%s/content/%s/%s.html' % (app_label, self.region,
+                                              content_name)
+        print(template)
+        html = render_to_string(template, request=request,
+                                context={'object':self, })
+        print(html)
+        return mark_safe(html)
 
 
 class RichTextContent(models.Model):

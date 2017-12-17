@@ -7,12 +7,12 @@ from django.db.models import Count
 def _mk_ctype_name(model_cls, content_type):
     name = "%s%s" %  (model_cls.__name__, content_type.__name__)
     return name
-mk_ctype_name = _mk_ctype_name
+#mk_ctype_name = _mk_ctype_name
 def _mk_related_ctype_name(cls, content_type):
     name = _mk_ctype_name(cls, content_type)
     related_name='%s_%s_set'%(cls._meta.app_label, name.lower())
     return related_name
-mk_related_ctype_name = _mk_related_ctype_name
+#mk_related_ctype_name = _mk_related_ctype_name
 class _ContentHandler(object):
     _ctype_register = {} # { model: [ctype1, ctype2] }
 
@@ -31,9 +31,37 @@ class _ContentHandler(object):
         else:
             return dict(self._ctype_register)
 
+    def _get_contents(self, model, ctype):
+        model_cls= model.__class__
+        ct_name = model_cls._meta.app_label
+        ct_related = "%s_%s_set" % (ct_name, ctype.__name__.lower())
+        contents = model.__getattribute__(ct_related).all()
+        return contents
+
+    def get_app_content(self, model):
+        from .models import ApplicationContent
+        app_cnt_name = _mk_ctype_name(model.__class__, ApplicationContent)
+        ctypes_names = self.get_ctype_names(model.__class__)
+        ctypes= self.get_ctypes(model.__class__)
+        if app_cnt_name in ctypes_names:
+            ctype = None
+            for ct in ctypes:
+                if ct.__name__ == app_cnt_name:
+                    ctype = ct
+            return self._get_contents(model, ct)[0]
+        return None
+
+    def get_contents(self, model):
+        model_cls= model.__class__
+        ctypes = self.get_ctypes(model_cls)
+        all_contents = []
+        for ct in ctypes:
+            contents = self._get_contents(model, ct)
+            all_contents += list(contents)
+        return all_contents
+
+
 content_register = _ContentHandler()
-def get_handler():
-    return content_register
 
 
 def create_content_type(cls, content_type, **kwargs):
@@ -108,7 +136,6 @@ def app_reverse_model(model_cls, view_name, args=None, kwargs=None, content_type
     if not url:
         raise NoReverseMatch("app_reverse: no match for %s, with args=%s,kwargs=%s" %
                              (view_name, str(args), str(kwargs)))
-    print(app_content)
     return "%s%s" % (app_content.parent.get_absolute_url(), url[1:])
 
 def app_reverse_full(view_name, args=None, kwargs=None, content_type=None):
