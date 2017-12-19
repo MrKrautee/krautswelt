@@ -5,6 +5,7 @@ from content_editor.models import create_plugin_base, Region
 from mptt.models import MPTTModel, TreeForeignKey
 
 from core.contents import create_content_type
+from core.contents import content_register
 from core.contents.models import ImageContent
 from core.contents.models import RichTextContent
 from core.contents.models import ApplicationContent
@@ -16,7 +17,7 @@ class PageManager(models.Manager):
 class Page(MPTTModel):
 
     title = models.CharField(_('title'), max_length=155)
-    slug = models.CharField(_('slug'), max_length=155)
+    slug = models.CharField(_('slug'), max_length=155, unique=True)
     create_date = models.DateTimeField(_('creation date'), auto_now_add=True,
                                        editable=False)
     pub_date = models.DateTimeField(_('publication date'), null=True,
@@ -56,14 +57,12 @@ class Page(MPTTModel):
     def create_content_type(cls, content_type, **kwargs):
         return create_content_type(cls, content_type, **kwargs)
 
-
-
-
+    def has_app_content(self):
+        if content_register.get_app_content(self):
+            return True
+        else:
+            return False
 
 Page.create_content_type(RichTextContent)
 Page.create_content_type(ImageContent)
 Page.create_content_type(ApplicationContent, apps=(('blog.urls',_("Blog")),))
-
-
-
-
