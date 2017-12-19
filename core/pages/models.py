@@ -17,7 +17,7 @@ class PageManager(models.Manager):
 class Page(MPTTModel):
 
     title = models.CharField(_('title'), max_length=155)
-    slug = models.CharField(_('slug'), max_length=155, unique=True)
+    slug = models.CharField(_('slug'), max_length=155)
     create_date = models.DateTimeField(_('creation date'), auto_now_add=True,
                                        editable=False)
     pub_date = models.DateTimeField(_('publication date'), null=True,
@@ -41,6 +41,9 @@ class Page(MPTTModel):
 
     class MPTTMeta:
         order_insertion_by = ['ordering']
+
+    class Meta:
+        unique_together = ('parent', 'slug')
 
     objects = PageManager()
 
