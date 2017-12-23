@@ -24,6 +24,7 @@ def render_content(model, request, template_name=None):
     contents = render_content_to_string(request, model)
     return render(request, template_name, {
         'model': model,
+        'page': model,
         'contents': contents,
     })
 

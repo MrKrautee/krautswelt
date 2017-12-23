@@ -94,13 +94,14 @@ def entry_detail(request, slug):
     comment_form_captcha = CaptchaCommentForm(initial={'parent': entry, })
     template_name = ('%s/%s_detail.html') % (BlogEntry._meta.app_label,
                                              BlogEntry._meta.model_name)
-    return render(request, template_name, {
+    context = {
         'object': entry,
         'contents': contents,
         'comments': comments,
         'comment_form': comment_form,
         'comment_form_captcha': comment_form_captcha,
-    })
+    }
+    return render(request, template_name, context)
 
 
 class BlogEntryListView(ListView):

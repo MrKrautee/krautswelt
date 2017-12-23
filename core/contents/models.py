@@ -89,6 +89,7 @@ class ApplicationContent(models.Model):
         page_path = cnt_info.parent.get_absolute_url()
         app_path = full_path.replace(page_path, '')
         fn, args, kwargs = resolve("/%s"%app_path, self.urls_conf)
+        #kwargs['extra_context'] =  dict(page = cnt_info.parent)
         return fn(request, *args, **kwargs)
 
 
