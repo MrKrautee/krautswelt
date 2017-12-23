@@ -7,5 +7,7 @@ urlpatterns = [
 
     url(r'^(?P<full_slug>.*)/$', page_view,
         name='page_view'),
+    url(r'^$', page_view,
+        name='page_index'),
 ]
 

@@ -10,7 +10,7 @@ from blog.views import BlogEntryYearArchive
 urlpatterns = [
     url(r'^comment/form/check/$', comment_form_check,
         name='comment_form_check'),
-    url(r'^list/$', BlogEntryListView.as_view(),
+    url(r'^$', BlogEntryListView.as_view(),
         name='entry_list'),
     url(r'^archive/$', entry_archive,
         name='entry_archive'),

@@ -6,6 +6,8 @@ from core.contents.views import render_content
 from .models import Page
 
 def _dissolve(request, slugs, parent=None):
+    """ find (best) match for slugs """
+    page = None
     try:
         page = get_object_or_404(Page, slug=slugs[0], parent=parent)
         if len(slugs) > 1:
@@ -18,15 +20,27 @@ def _dissolve(request, slugs, parent=None):
                     return ch_page
         return page
     except Http404 as e:
-        return None
+        if page:
+            return page
+    return None
 
-def page_view(request, full_slug):
+class Http404Error(Http404):
+    def __init__(self, full_slug):
+        self.message = "no match for %s" % full_slug
+
+def page_view(request, full_slug='/'):
     slugs = full_slug.split('/')
-    page = _dissolve(request, slugs)
+    try:
+        if len(full_slug)>1:
+            full_slug = "/%s/" % full_slug
+        # not working for pages with app content
+        page = get_object_or_404(Page, overwrite_url=full_slug)
+    except Http404 as e:
+        page = _dissolve(request, slugs)
     if not page:
-        raise Http404("no match for %s" % full_slug)
+        raise Http404Error(full_slug)
     if not page.has_app_content():
         if page.get_absolute_url().strip('/') != full_slug.strip('/'):
-            raise Http404("no match for %s" % full_slug)
+            raise Http404Error(full_slug)
     return render_content(page, request, template_name="pages/page.html")
 

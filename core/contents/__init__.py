@@ -61,6 +61,7 @@ class _ContentHandler(object):
         for ct in ctypes:
             contents = self._get_contents(model, ct)
             all_contents += list(contents)
+        all_contents = sorted(all_contents, key=lambda a: a.ordering)
         return all_contents
 
 content_register = _ContentHandler()

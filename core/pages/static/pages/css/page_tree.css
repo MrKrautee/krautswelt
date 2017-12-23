@@ -1,0 +1,40 @@
+
+.box {
+    white-space: nowrap;
+    position: relative;
+    margin: -8px;
+}
+
+.box-drawing {
+    display: block;
+    position: absolute;
+    display: inline-block;
+    font-family: monospace;
+    font-size: 28px;
+    line-height: 1.2;
+    font-weight: normal;
+}
+
+.box-drawing i {
+    display: inline-block;
+    font-style: normal;
+    width: 30px;
+}
+
+.box-drawing i.transition::after {
+    content: '\2502';
+
+}
+
+.box-drawing i.child::after {
+    content: '\251c';
+}
+
+.box-drawing i.last-child::after {
+    content: '\2514';
+}
+
+.box-text {
+    padding: 8px;
+}
+

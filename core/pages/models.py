@@ -1,8 +1,10 @@
 from django.db import models
+from django.utils import timezone
 from django.utils.translation import ugettext_lazy as _
 
 from content_editor.models import create_plugin_base, Region
 from mptt.models import MPTTModel, TreeForeignKey
+from mptt.managers import TreeManager
 
 from core.contents import create_content_type
 from core.contents import content_register
@@ -11,8 +13,24 @@ from core.contents.models import RichTextContent
 from core.contents.models import ApplicationContent
 from core.contents import app_reverse
 
-class PageManager(models.Manager):
-    pass
+class PageManager(TreeManager):
+
+    active_filter = dict(
+        is_active = True,
+    )
+
+    #def __init__(self, *args, **kwargs):
+    #    super(PageManager, self).__init__(*args, **kwargs)
+    #    self.tree_order = ( self.tree_id_attr, self.left_attr)
+
+    def get_nav_pages(self):
+        fil = dict(is_in_nav=True)
+        fil.update(self.active_filter)
+        return self.filter(**fil)
+
+    def get_active(self):
+        qs = self.filter(**self.active_filter)
+        return qs
 
 class Page(MPTTModel):
 
@@ -23,8 +41,11 @@ class Page(MPTTModel):
     pub_date = models.DateTimeField(_('publication date'), null=True,
                                     blank=True)
     is_active = models.BooleanField(_('is active'), default=False)
+    is_in_nav = models.BooleanField(_('is in navigation'), default=False)
+    overwrite_url = models.CharField(_('overwrite url'), max_length=255,
+                                     blank=True, null=True)
 
-    # Meta
+    # Meta / SEO
     meta_title = models.CharField(_('meta title'), max_length=255, blank=True)
     meta_description = models.CharField(_('meta description'), max_length=255,
                                        blank=True)
@@ -32,7 +53,8 @@ class Page(MPTTModel):
                                      blank=True)
 
 
-    parent = TreeForeignKey('self', null=True, blank=True, related_name='children', db_index=True)
+    parent = TreeForeignKey('self', null=True, blank=True,
+                            related_name='children', db_index=True)
     ordering = models.IntegerField(default=0)
     regions = (
         Region(key='main', title=_('Main')),
@@ -40,7 +62,7 @@ class Page(MPTTModel):
     )
 
     class MPTTMeta:
-        order_insertion_by = ['ordering']
+        pass
 
     class Meta:
         unique_together = ('parent', 'slug')
@@ -48,6 +70,8 @@ class Page(MPTTModel):
     objects = PageManager()
 
     def get_absolute_url(self):
+        if self.overwrite_url:
+            return self.overwrite_url
         ancestors = self.get_ancestors(include_self=True)
         slug = '/'.join([a.slug for a in ancestors])
         url = "/%s/" % slug

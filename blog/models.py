@@ -1,4 +1,4 @@
-import datetime
+from django.utils import timezone
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
 from django.utils.html import strip_tags, mark_safe
@@ -26,7 +26,7 @@ class BlogEntryManager(models.Manager):
 
     def get_active(self):
         qs = self.filter(is_active=True)
-        qs = qs.filter(pub_date__lte=datetime.datetime.now())
+        qs = qs.filter(pub_date__lte=timezone.now())
         qs = qs.order_by('-pub_date')
         return qs
 
