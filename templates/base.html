@@ -56,14 +56,14 @@
 
     <!-- Page Content -->
     <div class="container">
-<div class="breadcrumbs">
-        {% for d in page.get_ancestors %}
-        <a href="{{ d.get_absolute_url }}">{{ d }}</a> &rsaquo;
-        {% if forloop.last %}
-            <b>{{ page.title }}</b><br />
-        {% endif %}
-        {% endfor %}
-</div>
+        <div class="breadcrumbs">
+            {% for d in page.get_ancestors %}
+            <a href="{{ d.get_absolute_url }}">{{ d }}</a> &rsaquo;
+            {% if forloop.last %}
+                <b>{{ page.title }}</b><br />
+            {% endif %}
+            {% endfor %}
+        </div>
             {% block content %} {% endblock %}
         <hr>
         <!-- Footer -->
