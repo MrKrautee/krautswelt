@@ -47,6 +47,10 @@
 			    <a href="{{ page.url }}">{{ page.title }}</a>
                     </li>
                 {% endfor %}
+		{% if request.user.is_staff %}
+		<li><a href="/admin/">--------</a></li>
+		<li><a href="/admin/"><b>Admin</b></a></li>
+		{% endif %}
                 </ul>
             </div>
             <!-- /.navbar-collapse -->
