@@ -1,5 +1,7 @@
+import re
 from django.db import models
 from django.urls import resolve
+from django.apps import apps
 
 from django.utils.text import Truncator
 from django.utils.translation import ugettext_lazy as _
@@ -86,7 +88,24 @@ class RichTextContent(models.Model):
         return Truncator(strip_tags(self.text)).words(10, truncate=' ...')
 
     def render(self, *args, **kwargs):
-        return mark_safe(self.text)
+        link_format = "<a href=\"kwelt://%s/%s/%s/\">"
+        regex = link_format % ("(.*?)","(.*?)","(\d+)") + ".*?</a>"
+        pattern = re.compile(regex)
+        links = re.findall(pattern, self.text)
+        output = self.text
+        for link in links:
+            app_label, model_name, obj_id = link
+            model_type = apps.get_model(app_label=app_label,
+                                      model_name=model_name)
+            try:
+                model_obj = model_type.objects.get(id=obj_id)
+                real_url = model_obj.get_absolute_url()
+            except model_type.DoesNotExist as e:
+                # @TODO: 
+                real_url = '/404/'
+            output = output.replace(link_format % link,
+                                    "<a href=\"%s\">" % real_url)
+        return mark_safe(output)
 
 class ApplicationContent(models.Model):
     @classmethod

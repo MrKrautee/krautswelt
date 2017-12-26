@@ -20,11 +20,13 @@
       var name = windowname_to_id(win.name);
       if(name.startsWith("ckeditor_name:")){
         // called form ckeditor
+        var model = win.model;
+        var app_label = win.app_label;
         var instance_name = name.replace("ckeditor_name:", "");
         var editor = CKEDITOR.instances[instance_name];
         var selection = editor.getSelectedHtml(true);
-        var a_html_str = '<a href="kwelt://pages/Page/'+ chosenId+'/">'+
-          selection+'</a>';
+        var a_html_str = '<a href="kwelt://'+app_label+'/'+model+'/'+
+          chosenId+'/">'+ selection+'</a>';
         var page_link = CKEDITOR.dom.element.createFromHtml(a_html_str );
         editor.insertElement(page_link);
         win.close();
