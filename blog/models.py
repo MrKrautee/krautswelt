@@ -111,7 +111,7 @@ class BlogEntry(models.Model):
         return None
 
     def get_absolute_url(self):
-        url = app_reverse( 'entry_detail', args=(self.slug,))
+        url = app_reverse('entry_detail', args=(self.slug,))
         return url
 
     def __str__(self):

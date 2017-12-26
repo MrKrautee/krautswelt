@@ -157,6 +157,7 @@ def _app_reverse_full(view_name, args=None, kwargs=None, content_type=None):
 
 def app_reverse(*args, **kwargs):
     if len(args) == 2:
+        # @TODO: BUG not working for BlogEntry, 'entry_detail'
         return _app_reverse_model(*args, **kwargs)
     elif len(args) == 1:
         return _app_reverse_full(*args, **kwargs)
