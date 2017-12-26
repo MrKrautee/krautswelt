@@ -1,5 +1,5 @@
- CKEDITOR.plugins.add( 'internal_links', {
-    icons: 'internal_links',
+ CKEDITOR.plugins.add( 'page_links', {
+    icons: 'pagelink',
     init: function( editor ) {
         editor.addCommand( 'openLinkPopUp', {
             exec: function( editor ) {
@@ -10,10 +10,10 @@
               // editor.insertHtml( 'The current date and time is: <em>' );
             }
         });
-        editor.ui.addButton( 'Link', {
+        editor.ui.addButton( 'PageLink', {
             label: 'Insert Page Link',
             command: 'openLinkPopUp',
-            toolbar: 'insert'
+            toolbar: 'insert',
         });
     }
 });

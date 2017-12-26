@@ -67,12 +67,12 @@ class RichTextContent(models.Model):
         _('text'),
         config_name='richtext-content',
          # CKEDITOR.config.extraPlugins:
-         extra_plugins=['internal_links'],
+         extra_plugins=['page_links'],
 
          # CKEDITOR.plugins.addExternal(...)
          external_plugin_resources=[(
-             'internal_links',
-             '/static/pages/js/ckeditor/plugins/internal_links/',
+             'page_links',
+             '/static/pages/js/ckeditor/plugins/page_links/',
              'plugin.js',
          )],
     )

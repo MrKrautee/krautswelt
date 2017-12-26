@@ -155,7 +155,7 @@ STATIC_URL = '/static/'
 STATIC_ROOT = '%s/static/' % BASE_DIR
 
 #CAPTCHA_IMAGE_SIZE = (200, 100) 
-CAPTCHA_FONT_SIZE = 28 
+CAPTCHA_FONT_SIZE = 28
 CAPTCHA_FLITE_PATH = '/usr/bin/flite'
 
 #CKEDITOR insert page links
@@ -163,8 +163,12 @@ CKEDITOR_CONFIGS = {
     "richtext-content": {
         # 'skin': 'office2013',
         'toolbar_Basic': [
-            ['Source', '-', 'Bold', 'Italic']
+            ['Styles', '-', 'Format', 'Bold', 'Italic', 'Underline',
+             'Strike', 'Scayt', '-',  'Redo', 'Undo',
+             '-', 'Link', 'Unlink',
+             'PageLink', 'Anchor', 'SpecialChar', 'HorizontalRule', '-', 'Source', 'Maximize']
         ],
+        'toolbar': 'Basic',
         # 'extraPlugins': ('internal_links',),
         # 'externalPluginResources': [
         #     ('internal_links',
