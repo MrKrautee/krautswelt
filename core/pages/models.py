@@ -1,6 +1,9 @@
+import re
 from django.db import models
 from django.utils import timezone
 from django.utils.translation import ugettext_lazy as _
+from django.utils.html import mark_safe
+from django.apps import apps
 
 from content_editor.models import create_plugin_base, Region
 from mptt.models import MPTTModel, TreeForeignKey
@@ -90,6 +93,23 @@ class Page(MPTTModel):
         else:
             return False
 
-Page.create_content_type(RichTextContent)
+class RichText(RichTextContent):
+    def render(self, *args, **kwargs):
+        link_format = "<a href=\"kwelt://%s/%s/%s/\">"
+        regex = link_format % ("(.*?)","(.*?)","(\d+)") + ".*?</a>"
+        pattern = re.compile(regex)
+        links = re.findall(pattern, self.text)
+        output = self.text
+        for link in links:
+            app_label, model_name, obj_id = link
+            model_type = apps.get_model(app_label=app_label,
+                                      model_name=model_name)
+            model_obj = model_type.objects.get(id=obj_id)
+            real_url = model_obj.get_absolute_url()
+            output = output.replace(link_format % link,
+                                    "<a href=\"%s\">" % real_url)
+        return mark_safe(output)
+
+Page.create_content_type(RichText)
 Page.create_content_type(ImageContent)
 Page.create_content_type(ApplicationContent, apps=(('blog.urls',_("Blog")),))

@@ -8,6 +8,12 @@ from content_editor.models import create_plugin_base, Region
 from core.contents import create_content_type
 from core.contents.models import ImageContent, RichTextContent
 
+try:
+    from core.contents import app_reverse
+except:
+    from django.urls import reverse
+    def app_reverse( view_name, **kwargs):
+        return reverse(view_name, urlconf='blog.urls', **kwargs)
 
 class Category(models.Model):
 
@@ -104,6 +110,9 @@ class BlogEntry(models.Model):
             return qs[0]
         return None
 
+    def get_absolute_url(self):
+        url = app_reverse( 'entry_detail', args=(self.slug,))
+        return url
 
     def __str__(self):
         return "%s" % self.title[:20]
