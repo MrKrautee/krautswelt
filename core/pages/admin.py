@@ -136,6 +136,8 @@ class PageAdmin(ContentEditor):
 
     )
     inlines = create_inlines(Page)
+    raw_id_fields = ('parent', )
+    search_fields = ('title', )
     readonly_fields = ('create_date', )
     prepopulated_fields = {"slug": ("title",)}
     list_display = (
@@ -156,6 +158,9 @@ class PageAdmin(ContentEditor):
         action_del_navigation,
     )
     list_editable = ()
+
+    class Media:
+        js = ('/static/admin/pages/js/RelatedPagesLookups.js',)
 
     def get_children(self, obj):
         return list(obj.get_children())

@@ -63,7 +63,19 @@ class ImageContent(models.Model):
 
 class RichTextContent(models.Model):
 
-    text = RichTextField(_('text'), config_name='richtext-content')
+    text = RichTextField(
+        _('text'),
+        config_name='richtext-content',
+         # CKEDITOR.config.extraPlugins:
+         extra_plugins=['internal_links'],
+
+         # CKEDITOR.plugins.addExternal(...)
+         external_plugin_resources=[(
+             'internal_links',
+             '/static/pages/js/ckeditor/plugins/internal_links/',
+             'plugin.js',
+         )],
+    )
 
     class Meta:
         verbose_name = _('rich text')
