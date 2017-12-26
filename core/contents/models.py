@@ -67,16 +67,7 @@ class RichTextContent(models.Model):
 
     text = RichTextField(
         _('text'),
-        config_name='richtext-content',
-         # CKEDITOR.config.extraPlugins:
-         extra_plugins=['page_links'],
-
-         # CKEDITOR.plugins.addExternal(...)
-         external_plugin_resources=[(
-             'page_links',
-             '/static/pages/js/ckeditor/plugins/page_links/',
-             'plugin.js',
-         )],
+         config_name='richtext-content',
     )
 
     class Meta:

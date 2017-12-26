@@ -3,7 +3,6 @@
 
 {% block extrastyle %}
   {{ block.super }}
-<link rel="stylesheet" type="text/css" href="{% static "pages/css/page_tree.css" %}" />
 {% endblock %}
 
 {% block extrahead %}
@@ -14,23 +13,7 @@
 </script>
 {% endblock %}
 
-
-{% if not is_popup %}
-{% block breadcrumbs %}
-<div class="breadcrumbs">
-<a href="{% url 'admin:index' %}">{% trans 'Home' %}</a>
-&rsaquo; <a href="{% url 'admin:app_list' app_label=cl.opts.app_label %}">{{ cl.opts.app_config.verbose_name }}</a>
-&rsaquo; {{ cl.opts.verbose_name_plural|capfirst }}
-</div>
-{% endblock %}
-{% endif %}
-
-{% block coltype %}flex{% endblock %}
-
 {% block content %}
-app: {{ cl.opts.app_label }}<br />
-model: {{ cl.opts.object_name }}<br />
-
 <script type="text/javascript">
 (function($) { 
 $(document).ready(function() {

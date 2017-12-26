@@ -4,7 +4,6 @@ from django.urls import reverse
 
 from content_editor.admin import ContentEditor
 from core.contents.admin import create_inlines
-from core.contents import app_reverse
 
 from .models import BlogEntry, Category, Comment
 
@@ -31,8 +30,7 @@ class BlogEntryAdmin(ContentEditor):
     filter_horizontal = ('related_entries', )
 
     def view_on_site(self, obj):
-        url = app_reverse('entry_detail', kwargs={'slug': obj.slug})
-        return url
+        return obj.get_absolute_url()
 
 def approve_comment(modeladmin, request, queryset):
         for comment in queryset:

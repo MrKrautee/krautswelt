@@ -162,18 +162,25 @@ CAPTCHA_FLITE_PATH = '/usr/bin/flite'
 CKEDITOR_CONFIGS = {
     "richtext-content": {
         # 'skin': 'office2013',
+        'width': 900,
         'toolbar_Basic': [
-            ['Styles', '-', 'Format', 'Bold', 'Italic', 'Underline',
-             'Strike', 'Scayt', '-',  'Redo', 'Undo',
-             '-', 'Link', 'Unlink',
-             'PageLink', 'Anchor', 'SpecialChar', 'HorizontalRule', '-', 'Source', 'Maximize']
+            {'name':'styles',
+                'items':['Styles', 'Format', 'Scayt']},
+            {'name':'basicstyles',
+                 'items':['Bold', 'Italic', 'Underline', 'Strike', 'RemoveFormat']},
+            {'name':'clipboard',
+                 'items':['Copy', 'Paste', 'Undo', 'Redo']},
+            {'name':'links',
+                 'items':['Link', 'Unlink', 'PageLink', 'Anchor']},
+            {'name':'insert',
+                 'items':['SpecialChar', 'HorizontalRule']},
+            {'name':'paragraph',
+                 'items':['NumberedList', 'BulletedList',]},
+            {'name':'misc',
+                 'items':['Source', 'Maximize','About' ]},
         ],
         'toolbar': 'Basic',
-        # 'extraPlugins': ('internal_links',),
-        # 'externalPluginResources': [
-        #     ('internal_links',
-        #      '/static/pages/js/ckeditor/plugins/internal_links/',
-        #      'plugin.js'),
-        # ],
+        'customConfig': "/static/core/js/ckeditor/config.js",
+        # for extraPlugins see the customConfig File
     }
 }

@@ -160,7 +160,10 @@ class PageAdmin(ContentEditor):
     list_editable = ()
 
     class Media:
-        js = ('/static/admin/pages/js/RelatedPagesLookups.js',)
+        css = dict(
+            all=('/static/pages/css/page_tree.css',)
+        )
+        js = ('/static/admin/contents/js/RelatedLinksLookup.js',)
 
     def get_children(self, obj):
         return list(obj.get_children())

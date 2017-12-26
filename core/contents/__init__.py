@@ -75,12 +75,7 @@ def create_content_type(cls, content_type, **kwargs):
         verbose_name_plural = content_type._meta.verbose_name_plural
 
     def __str__(self):
-        return '%s<region=%s ordering=%s pk=%s>' % (
-            self._meta.label,
-            self.region,
-            self.ordering,
-            self.pk,
-        )
+        return '%s' % self.id
 
     @classmethod
     def get_queryset(cls):
