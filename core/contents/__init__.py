@@ -86,16 +86,14 @@ def create_content_type(cls, content_type, **kwargs):
     def get_queryset(cls):
         return cls.objects.all()
 
+    related_name=_mk_related_ctype_name(cls, content_type)
     attrs = {
         '__module__': cls.__module__,
         '__str__': __str__,
         'get_queryset': get_queryset,
         'Meta': Meta,
-        'parent': dbmodels.ForeignKey(cls,
-                                      related_name=_mk_related_ctype_name(cls,
-                                                                         content_type),
-                                      on_delete=dbmodels.CASCADE
-                                     ),
+        'parent': dbmodels.ForeignKey(cls, related_name=related_name,
+                                      on_delete=dbmodels.CASCADE),
         'region': dbmodels.CharField(max_length=255),
         'ordering': dbmodels.IntegerField(default=0),
     }
@@ -115,7 +113,8 @@ def create_content_type(cls, content_type, **kwargs):
     content_register.register_ctype(cls, ctype)
     return ctype
 
-def _app_reverse_model(model_cls, view_name, args=None, kwargs=None, content_type=None):
+def _app_reverse_model(model_cls, view_name, args=None, kwargs=None,
+                       content_type=None):
     from .models import ApplicationContent
     content_type = content_type or ApplicationContent
     ctype_name = _mk_ctype_name(model_cls, content_type)
@@ -136,7 +135,8 @@ def _app_reverse_model(model_cls, view_name, args=None, kwargs=None, content_typ
             if url:
                 break
     if not url:
-        raise NoReverseMatch("app_reverse: no match for %s, with args=%s,kwargs=%s" %
+        raise NoReverseMatch("app_reverse: no match for %s, "
+                             "with args=%s,kwargs=%s" %
                              (view_name, str(args), str(kwargs)))
     return "%s%s" % (app_content.parent.get_absolute_url(), url[1:])
 
@@ -145,11 +145,13 @@ def _app_reverse_full(view_name, args=None, kwargs=None, content_type=None):
     url = None
     try:
         for model, contens in model_contents.items():
-            url = _app_reverse_model(model, view_name, args, kwargs, content_type)
+            url = _app_reverse_model(model, view_name, args, kwargs,
+                                     content_type)
     except Exception as e:
         pass
     if not url:
-        raise NoReverseMatch("app_reverse: no match for %s, with args=%s,kwargs=%s" %
+        raise NoReverseMatch("app_reverse: no match for %s, "
+                             "with args=%s,kwargs=%s" %
                              (view_name, str(args), str(kwargs)))
     return url
 
