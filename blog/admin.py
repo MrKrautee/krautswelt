@@ -44,7 +44,7 @@ class CommentAdmin(ModelAdmin):
 # in case that krautswelt is installed.
 # indicate new comments to approve, in admin index.
 try:
-    from core.advanced_admin.admin import admin_site
+    from advanced_admin.admin import admin_site
 
     def msg_new_comment(request):
         comments_qs = Comment.objects.get_unapproved()

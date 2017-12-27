@@ -38,7 +38,8 @@ MEDIA_URL = '/media/'
 
 INSTALLED_APPS = [
     'core.apps.CoreConfig',
-    'core.app_settings.apps.AppSettingsConfig',
+    'app_settings.apps.AppSettingsConfig',
+    'advanced_admin.apps.AdvancedAdminConfig',
     'core.contents.apps.ContentsConfig',
     'core.pages.apps.PagesConfig',
     'blog.apps.BlogConfig',
