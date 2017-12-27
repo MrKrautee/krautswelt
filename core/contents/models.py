@@ -76,7 +76,12 @@ class RichTextContent(models.Model):
 
     def __str__(self):
         # Return the first few words of the content (with tags stripped)
-        return Truncator(strip_tags(self.text)).words(10, truncate=' ...')
+        return self.excerpt(word_count=10)
+
+    def excerpt(self, word_count=200):
+        no_tags = strip_tags(self.text)
+        return Truncator(no_tags).words(word_count, truncate=' ...')
+
 
     def render(self, *args, **kwargs):
         link_format = "<a href=\"kwelt://%s/%s/%s/\">"

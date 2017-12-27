@@ -40,21 +40,24 @@ class _ContentHandler(object):
 
     def get_app_content(self, model):
         from .models import ApplicationContent
-        app_cnt_name = _mk_ctype_name(model.__class__, ApplicationContent)
-        ctypes_names = self.get_ctype_names(model.__class__)
-        ctypes= self.get_ctypes(model.__class__)
-        if app_cnt_name in ctypes_names:
-            ctype = None
-            for ct in ctypes:
-                if ct.__name__ == app_cnt_name:
-                    ctype = ct
-            app_contents = self._get_contents(model, ct)
-            if app_contents:
-                return app_contents[0]
-            return None
-        return None
+        return self.get_contents(model, content_type=ApplicationContent)[0]
 
-    def get_contents(self, model):
+    def get_contents(self, model, content_type=None):
+        """ returns content object of content_type for model.
+            If content_type is None it returns get_all_contents()
+        """
+        if content_type is None:
+            return self.get_all_contents(model)
+        else:
+            model_cls = model.__class__
+            cnt_name = _mk_ctype_name(model_cls, content_type)
+            fieldname = "%s_%s_set" % (model._meta.app_label, cnt_name.lower())
+            return model.__getattribute__(fieldname).all()
+
+    def get_all_contents(self, model):
+        """ returns all different contents of model,
+            ordered by orderering.
+        """
         model_cls= model.__class__
         ctypes = self.get_ctypes(model_cls)
         all_contents = []

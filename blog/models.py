@@ -5,7 +5,7 @@ from django.utils.html import strip_tags, mark_safe
 
 from content_editor.models import create_plugin_base, Region
 
-from core.contents import create_content_type
+from core.contents import create_content_type, content_register
 from core.contents.models import ImageContent, RichTextContent
 
 try:
@@ -89,11 +89,11 @@ class BlogEntry(models.Model):
 
     objects = BlogEntryManager()
 
-    def get_excerpt(self, length=777):
-        richtxt_contents = self.blog_blogentryrichtextcontent_set.all()
-        richtxt_contents = richtxt_contents.order_by('ordering')
-        if richtxt_contents.count():
-            return mark_safe(richtxt_contents[0].render()[:length])
+    def get_excerpt(self, word_count=350):
+        text_contents = content_register.get_contents(self,
+                                                      content_type=RichTextContent)
+        if text_contents.count():
+            return text_contents[0].excerpt(word_count=word_count)
         return ''
 
     def get_comments(self):
@@ -105,10 +105,11 @@ class BlogEntry(models.Model):
         return self.get_comments().count()
 
     def get_first_image(self):
-        qs = self.blog_imagecontent_set.order_by('ordering')
-        if qs.count():
-            return qs[0]
-        return None
+        img_contents = content_register.get_contents(self,
+                                                     content_type=ImageContent)
+        if img_contents.count():
+            return img_contents[0]
+        return ''
 
     def get_absolute_url(self):
         url = app_reverse('entry_detail', args=(self.slug,))
