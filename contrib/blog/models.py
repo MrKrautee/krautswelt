@@ -13,7 +13,7 @@ try:
 except:
     from django.urls import reverse
     def app_reverse( view_name, **kwargs):
-        return reverse(view_name, urlconf='blog.urls', **kwargs)
+        return reverse(view_name, urlconf='contrib.blog.urls', **kwargs)
 
 class Category(models.Model):
 
@@ -32,6 +32,7 @@ class BlogEntryManager(models.Manager):
 
     def get_active(self):
         qs = self.filter(is_active=True)
+        # @TODO: BUG ???
         qs = qs.filter(pub_date__lte=timezone.now())
         qs = qs.order_by('-pub_date')
         return qs

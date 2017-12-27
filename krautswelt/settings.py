@@ -37,12 +37,13 @@ MEDIA_URL = '/media/'
 
 
 INSTALLED_APPS = [
-    'core.apps.CoreConfig',
+    # 'contrib.admin.apps.AdminConfig',
+    'contrib.user.apps.UserConfig',
     'app_settings.apps.AppSettingsConfig',
     'advanced_admin.apps.AdvancedAdminConfig',
     'core.contents.apps.ContentsConfig',
     'core.pages.apps.PagesConfig',
-    'blog.apps.BlogConfig',
+    'contrib.blog.apps.BlogConfig',
     'django.contrib.admin',
     'mptt',
     'captcha',
@@ -114,7 +115,7 @@ DATABASES = {
     }
 }
 
-AUTH_USER_MODEL='core.User'
+AUTH_USER_MODEL='user.User'
 
 # Password validation
 # https://docs.djangoproject.com/en/1.10/ref/settings/#auth-password-validators
@@ -153,7 +154,8 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/1.10/howto/static-files/
 
 STATIC_URL = '/static/'
-STATIC_ROOT = '%s/static/' % BASE_DIR
+STATIC_ROOT = '%s/../static/' % BASE_DIR
+STATICFILES_DIRS = [ '%s/static/' % BASE_DIR, ]
 
 #CAPTCHA_IMAGE_SIZE = (200, 100) 
 CAPTCHA_FONT_SIZE = 28
@@ -181,7 +183,7 @@ CKEDITOR_CONFIGS = {
                  'items':['Source', 'Maximize','About' ]},
         ],
         'toolbar': 'Basic',
-        'customConfig': "/static/core/js/ckeditor/config.js",
+        'customConfig': "/static/js/ckeditor/config.js",
         # for extraPlugins see the customConfig File
     }
 }

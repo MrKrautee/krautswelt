@@ -93,4 +93,4 @@ class Page(MPTTModel):
 
 Page.create_content_type(RichTextContent)
 Page.create_content_type(ImageContent)
-Page.create_content_type(ApplicationContent, apps=(('blog.urls',_("Blog")),))
+Page.create_content_type(ApplicationContent, apps=(('contrib.blog.urls',_("Blog")),))

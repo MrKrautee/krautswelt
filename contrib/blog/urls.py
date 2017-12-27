@@ -1,11 +1,11 @@
 from django.conf.urls import url
-from blog.views import entry_detail
-from blog.views import entry_archive
-from blog.views import comment_form_check
-from blog.views import BlogEntryListView
-from blog.views import BlogEntryMonthArchive
-from blog.views import BlogEntryDayArchive
-from blog.views import BlogEntryYearArchive
+from .views import entry_detail
+from .views import entry_archive
+from .views import comment_form_check
+from .views import BlogEntryListView
+from .views import BlogEntryMonthArchive
+from .views import BlogEntryDayArchive
+from .views import BlogEntryYearArchive
 
 urlpatterns = [
     url(r'^comment/form/check/$', comment_form_check,

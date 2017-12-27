@@ -40,7 +40,11 @@ class _ContentHandler(object):
 
     def get_app_content(self, model):
         from .models import ApplicationContent
-        return self.get_contents(model, content_type=ApplicationContent)[0]
+        app_contents = self.get_contents(model, content_type=ApplicationContent)
+        if app_contents.count():
+            return app_contents[0]
+        else:
+            return None
 
     def get_contents(self, model, content_type=None):
         """ returns content object of content_type for model.
