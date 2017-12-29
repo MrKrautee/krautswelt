@@ -183,7 +183,7 @@ CKEDITOR_CONFIGS = {
                  'items':['Source', 'Maximize','About' ]},
         ],
         'toolbar': 'Basic',
-        'customConfig': "/static/js/ckeditor/config.js",
+        'customConfig': "/static/krautswelt/js/ckeditor/config.js",
         # for extraPlugins see the customConfig File
     }
 }
