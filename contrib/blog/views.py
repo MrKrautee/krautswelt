@@ -16,7 +16,7 @@ from captcha.fields import CaptchaField
 from captcha.models import CaptchaStore
 from captcha.helpers import captcha_image_url
 
-from .models import BlogEntry, BlogEntryManager
+from .models import Article, ArticleManager
 from .models import Comment
 
 
@@ -90,15 +90,15 @@ def comment_form_check(request):
         return HttpResponseNotAllowed(('POST',))
 
 
-def entry_detail(request, slug):
-    entry = get_object_or_404(BlogEntry, slug=slug,
-                              **BlogEntryManager.active_filter)
+def article_detail(request, slug):
+    entry = get_object_or_404(Article, slug=slug,
+                              **ArticleManager.active_filter)
     contents = render_content_to_string(request, entry)
     comments = Comment.objects.get_comments(entry)
     comment_form = CommentForm(initial={'parent': entry, })
     comment_form_captcha = CaptchaCommentForm(initial={'parent': entry, })
-    template_name = ('%s/%s_detail.html') % (BlogEntry._meta.app_label,
-                                             BlogEntry._meta.model_name)
+    template_name = ('%s/%s_detail.html') % (Article._meta.app_label,
+                                             Article._meta.model_name)
     context = {
         'object': entry,
         'contents': contents,
@@ -109,36 +109,36 @@ def entry_detail(request, slug):
     return render(request, template_name, context)
 
 
-class BlogEntryListView(ListView):
+class ArticleListView(ListView):
 
-    queryset = BlogEntry.objects.get_active()
-    template_name = '%s/%s_list.html' % (BlogEntry._meta.app_label,
-                                         BlogEntry._meta.model_name)
+    queryset = Article.objects.get_active()
+    template_name = '%s/%s_list.html' % (Article._meta.app_label,
+                                         Article._meta.model_name)
     allow_empty = False
 
     def get_context_data(self, **kwargs):
-        context = super(BlogEntryListView, self).get_context_data(**kwargs)
+        context = super(ArticleListView, self).get_context_data(**kwargs)
         context['site_title'] = _("All articles")
         return context
 
 
-class BlogEntryYearArchive(BlogEntryListView):
+class ArticleYearArchive(ArticleListView):
 
     def get_context_data(self, **kwargs):
-        context = super(BlogEntryYearArchive, self).get_context_data(**kwargs)
+        context = super(ArticleYearArchive, self).get_context_data(**kwargs)
         context['site_title'] = _('Archive for %s') % self.args[0]
         return context
 
     def get_queryset(self):
         year = self.args[0]
-        qs = BlogEntry.objects.get_for_year(year)
+        qs = Article.objects.get_for_year(year)
         return qs
 
 
-class BlogEntryMonthArchive(BlogEntryListView):
+class ArticleMonthArchive(ArticleListView):
 
     def get_context_data(self, **kwargs):
-        context = super(BlogEntryMonthArchive, self).get_context_data(**kwargs)
+        context = super(ArticleMonthArchive, self).get_context_data(**kwargs)
         month_name = date(day=1, month=int(self.args[1]), year=2017).strftime('%B')
         context['site_title'] = _('Archive for %s') % month_name
         return context
@@ -146,14 +146,14 @@ class BlogEntryMonthArchive(BlogEntryListView):
     def get_queryset(self):
         month = self.args[1]
         year = self.args[0]
-        qs = BlogEntry.objects.get_for_month(year, month)
+        qs = Article.objects.get_for_month(year, month)
         return qs
 
 
-class BlogEntryDayArchive(BlogEntryListView):
+class ArticleDayArchive(ArticleListView):
 
     def get_context_data(self, **kwargs):
-        context = super(BlogEntryDayArchive, self).get_context_data(**kwargs)
+        context = super(ArticleDayArchive, self).get_context_data(**kwargs)
         day_date = date(day=int(self.args[2]), month=int(self.args[1]),
                           year=int(self.args[0]))
 
@@ -172,19 +172,19 @@ class BlogEntryDayArchive(BlogEntryListView):
         day = self.args[2]
         month = self.args[1]
         year = self.args[0]
-        qs = BlogEntry.objects.get_for_day(year, month, day)
+        qs = Article.objects.get_for_day(year, month, day)
         return qs
 
-def entry_archive(request):
+def article_archive(request):
 
-    template_name = ('%s/%s_archive.html') % (BlogEntry._meta.app_label,
-                                             BlogEntry._meta.model_name)
-    years = BlogEntry.objects.get_years()
-    month = BlogEntry.objects.get_months()
+    template_name = ('%s/%s_archive.html') % (Article._meta.app_label,
+                                             Article._meta.model_name)
+    years = Article.objects.get_years()
+    month = Article.objects.get_months()
 
     month_plus_count = []
     for m in month:
-        count = BlogEntry.objects.get_for_month(m.year, m.month).count()
+        count = Article.objects.get_for_month(m.year, m.month).count()
         tmp = {}
         tmp['count'] = count
         tmp['month'] = m

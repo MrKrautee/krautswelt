@@ -8,7 +8,7 @@
         {% for object in object_list %}
         <div class="panel panel-default">
             <div class="panel-heading">
-                <a href="{% app_url 'entry_detail' object.slug %}">{{ object.title }}</a> - 
+                <a href="{% app_url 'article_detail' object.slug %}">{{ object.title }}</a> - 
                 <small class="text-muted">{{ object.pub_date }}</small>
             </div>
             <div class="panel-body">{{ object.get_excerpt|truncatewords:77 }}</div>

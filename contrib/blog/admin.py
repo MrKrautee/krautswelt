@@ -6,9 +6,9 @@ from django.urls import reverse
 from content_editor.admin import ContentEditor
 from core.contents.admin import create_inlines
 
-from .models import BlogEntry, Category, Comment
+from .models import Article, Category, Comment
 
-blog_content_inlines = create_inlines(BlogEntry)
+blog_content_inlines = create_inlines(Article)
 class CategoryAdmin(ModelAdmin):
     prepopulated_fields = {"slug": ("name",)}
     list_display = ('name', 'slug', )
@@ -16,7 +16,7 @@ class CategoryAdmin(ModelAdmin):
     ordering = ('name', 'slug', )
 
 
-class BlogEntryAdmin(ContentEditor):
+class ArticleAdmin(ContentEditor):
 
     inlines = blog_content_inlines # [ImageInline, RichTextInline, ]
     readonly_fields = ('create_date', )
@@ -84,5 +84,5 @@ except:
     pass
 
 site.register(Category, CategoryAdmin)
-site.register(BlogEntry, BlogEntryAdmin)
+site.register(Article, ArticleAdmin)
 site.register(Comment, CommentAdmin)

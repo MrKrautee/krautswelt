@@ -7,3 +7,4 @@ pip
 django-simple-captcha
 django-mptt
 django-content-editor==1.0.0
+pytz

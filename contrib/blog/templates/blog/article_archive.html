@@ -1,12 +1,12 @@
 {% extends "base.html" %}
-{% load i18n %}
+{% load i18n contents %}
 {% block title %}Archive{% endblock title %}
 
 {% block content %}
 <div class="container">
     <h3>{% trans "Archive" %}</h3>
     {% for year_date in years %}
-    <a id="year-{{ year_date.year }}" href="{% url 'entry_archive_year' year_date.year %}"
+    <a id="year-{{ year_date.year }}" href="{% app_url 'article_archive_year' year_date.year %}"
         title="Show archive for {{ year_date.year }}">
         <h4>{{ year_date|date:"Y" }}</h4>
     </a>
@@ -14,7 +14,7 @@
         {% with d_month.month as month_date %}
             {% if month_date.year == year_date.year %}
             <a id="month-{{ month_date.month }}"
-                href="{% url "entry_archive_month" month_date.year month_date.month %}"
+                href="{% app_url "article_archive_month" month_date.year month_date.month %}"
                 title="Show archive for {{ month_date|date:"F" }}, {{ year_date.year }}">
                  {{ month_date|date:"F" }} - {{d_month.count }} entrie(s).
                 </a>

@@ -24,7 +24,7 @@ class Category(models.Model):
         return self.name
 
 
-class BlogEntryManager(models.Manager):
+class ArticleManager(models.Manager):
 
     active_filter = dict (
                         is_active=True,
@@ -32,7 +32,7 @@ class BlogEntryManager(models.Manager):
                          )
 
     def get_queryset(self):
-        qs = super(BlogEntryManager, self).get_queryset()
+        qs = super(ArticleManager, self).get_queryset()
         return qs
 
     def get_active(self):
@@ -70,7 +70,7 @@ class BlogEntryManager(models.Manager):
         return qs.dates('pub_date', 'month')
 
 
-class BlogEntry(models.Model):
+class Article(models.Model):
 
     title = models.CharField(_('title'), max_length=255)
     slug = models.SlugField(_('slug'), max_length=100, unique=True)
@@ -91,7 +91,7 @@ class BlogEntry(models.Model):
 
     regions = (Region(key='main', title=_('Main')), )
 
-    objects = BlogEntryManager()
+    objects = ArticleManager()
 
     def get_excerpt(self, word_count=350):
         text_contents = content_register.get_contents(self,
@@ -116,15 +116,15 @@ class BlogEntry(models.Model):
         return ''
 
     def get_absolute_url(self):
-        url = app_reverse('entry_detail', args=(self.slug,))
+        url = app_reverse('article_detail', args=(self.slug,))
         return url
 
     def __str__(self):
         return "%s" % self.title[:20]
 
 
-create_content_type(BlogEntry, ImageContent)
-create_content_type(BlogEntry, RichTextContent)
+create_content_type(Article, ImageContent)
+create_content_type(Article, RichTextContent)
 
 class CommentManager(models.Manager):
 
@@ -145,7 +145,7 @@ class CommentManager(models.Manager):
 
 class Comment(models.Model):
 
-    parent = models.ForeignKey(BlogEntry)
+    parent = models.ForeignKey(Article)
 
     name = models.CharField(_('name'),
                             max_length=100,
