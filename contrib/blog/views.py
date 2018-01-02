@@ -16,7 +16,7 @@ from captcha.fields import CaptchaField
 from captcha.models import CaptchaStore
 from captcha.helpers import captcha_image_url
 
-from .models import BlogEntry
+from .models import BlogEntry, BlogEntryManager
 from .models import Comment
 
 
@@ -28,10 +28,10 @@ class CommentForm(ModelForm):
         self.fields['website'].widget.attrs['placeholder'] = _("my.website.com *")
         self.fields['comment'].widget.attrs['placeholder'] = _("your comment ...")
         self.fields['comment'].widget.attrs['rows'] = 3
-
     class Meta:
         model = Comment
-        fields = ['name', 'email', 'website', 'comment', 'parent']
+        fields = ['name', 'email', 'website', 'comment', 'parent',
+                  'notify_new_entry', 'notify_new_comment']
         widgets = {'parent': HiddenInput(), }
 
 
@@ -42,13 +42,17 @@ class CaptchaCommentForm(ModelForm):
 
     class Meta:
         model = Comment
-        fields = ['name', 'email', 'website', 'comment', 'parent']
+        #fields = ['name', 'email', 'website', 'comment', 'parent']
+        fields = ['name', 'email', 'website', 'comment', 'parent',
+                  'notify_new_entry', 'notify_new_comment']
         widgets = {
             'name': HiddenInput(),
             'email': HiddenInput(),
             'website': HiddenInput(),
             'comment': HiddenInput(),
             'parent': HiddenInput(),
+            'notify_new_comment': HiddenInput(),
+            'notify_new_entry': HiddenInput(),
         }
 
 
@@ -87,7 +91,8 @@ def comment_form_check(request):
 
 
 def entry_detail(request, slug):
-    entry = get_object_or_404(BlogEntry, slug=slug)
+    entry = get_object_or_404(BlogEntry, slug=slug,
+                              **BlogEntryManager.active_filter)
     contents = render_content_to_string(request, entry)
     comments = Comment.objects.get_comments(entry)
     comment_form = CommentForm(initial={'parent': entry, })

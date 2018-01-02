@@ -26,14 +26,17 @@ class Category(models.Model):
 
 class BlogEntryManager(models.Manager):
 
+    active_filter = dict (
+                        is_active=True,
+                        pub_date__lte=timezone.now(),
+                         )
+
     def get_queryset(self):
         qs = super(BlogEntryManager, self).get_queryset()
         return qs
 
     def get_active(self):
-        qs = self.filter(is_active=True)
-        # @TODO: BUG ???
-        qs = qs.filter(pub_date__lte=timezone.now())
+        qs = self.filter(**self.active_filter)
         qs = qs.order_by('-pub_date')
         return qs
 
@@ -156,9 +159,11 @@ class Comment(models.Model):
                                 editable=False)
 
     is_active = models.BooleanField(_('id active'), default=False)
-    notify_new_comment = models.BooleanField(_('notify me for new comments'),
+    notify_new_comment = models.BooleanField(_('notify  new comments'),
+                                             help_text=_('notify me for new comments'),
                                              default=False)
-    notify_new_entry = models.BooleanField(_('notify me for new blog entries'),
+    notify_new_entry = models.BooleanField(_('notify new blog entries'),
+                                           help_text=_('notify me for new entries'),
                                            default=False)
     objects = CommentManager()
 
