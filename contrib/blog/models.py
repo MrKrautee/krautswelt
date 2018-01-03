@@ -5,7 +5,6 @@ from django.utils.html import strip_tags, mark_safe
 
 from content_editor.models import create_plugin_base, Region
 
-from core.contents import create_content_type, content_register
 from core.contents.models import WithContents
 from core.contents.models import ImageContent
 from core.contents.models import RichTextContent
