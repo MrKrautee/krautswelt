@@ -17,11 +17,8 @@ class PageManager(TreeManager):
 
     active_filter = dict(
         is_active = True,
+        pub_date__lte = timezone.now(),
     )
-
-    #def __init__(self, *args, **kwargs):
-    #    super(PageManager, self).__init__(*args, **kwargs)
-    #    self.tree_order = ( self.tree_id_attr, self.left_attr)
 
     def get_nav_pages(self):
         fil = dict(is_in_nav=True)

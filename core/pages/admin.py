@@ -15,6 +15,7 @@ from mptt.admin import DraggableMPTTAdmin
 
 from content_editor.admin import ContentEditor
 from core.contents.admin import create_inlines
+from core.contents.views import render_content
 from .models import Page
 
 #content_inlines = create_inlines(Page)
@@ -200,14 +201,14 @@ class PageAdmin(ContentEditor):
     def move_view(self, request, page_id, extra_context=None):
         opts = self.model._meta
         app_label = opts.app_label
-        page = Page.objects.get(id=page_id)
+        page = self.model.objects.get(id=page_id)
         if request.POST: # form submit
             form = PageMoveForm(data=request.POST)
             if form.is_valid():
                 cd = form.cleaned_data
                 position = cd['position']
                 target_id = cd['target']
-                target = Page.objects.get(id=target_id)
+                target = self.model.objects.get(id=target_id)
                 page.move_to(target, position)
                 return self.changelist_view(request, extra_context)
         else:
@@ -220,6 +221,12 @@ class PageAdmin(ContentEditor):
         return TemplateResponse(request, "admin/%s/%s/move_page.html" %
                                 (app_label, opts.model_name), context)
 
+    def preview_view(self, request, page_id):
+        page = self.model.objects.get(id=page_id)
+        return render_content(page, request)
+
+
+
     def get_urls(self):
         s_urls = super(PageAdmin, self).get_urls()
         info = self.model._meta.app_label, self.model._meta.model_name
@@ -231,6 +238,8 @@ class PageAdmin(ContentEditor):
         urlpatterns = [
             url(r'^(.+)/move/$', wrap(self.move_view),
                 name="%s_%s_move" % info),
+            url(r'^(.+)/preview/$', wrap(self.preview_view),
+                name="%s_%s_preview" % info),
         ]
         urls_merged = urlpatterns + s_urls
         return urls_merged

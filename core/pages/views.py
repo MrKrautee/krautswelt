@@ -64,5 +64,5 @@ def page_view(request, full_slug='/'):
         # for pages without AppContent the full_slug has to match:
         if page.get_absolute_url().strip('/') != full_slug.strip('/'):
             raise Http404Error(full_slug)
-    return render_content(page, request, template_name="pages/page.html")
+    return render_content(page, request)
 
