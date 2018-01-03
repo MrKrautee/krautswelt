@@ -7,11 +7,10 @@ from content_editor.models import create_plugin_base, Region
 from mptt.models import MPTTModel, TreeForeignKey
 from mptt.managers import TreeManager
 
-from core.contents import create_content_type
-from core.contents import content_register
 from core.contents.models import ImageContent
 from core.contents.models import RichTextContent
 from core.contents.models import ApplicationContent
+from core.contents.models import WithContents
 from core.contents import app_reverse
 
 class PageManager(TreeManager):
@@ -33,7 +32,7 @@ class PageManager(TreeManager):
         qs = self.filter(**self.active_filter)
         return qs
 
-class Page(MPTTModel):
+class Page(MPTTModel, WithContents):
 
     title = models.CharField(_('title'), max_length=155)
     slug = models.CharField(_('slug'), max_length=155)
@@ -81,15 +80,6 @@ class Page(MPTTModel):
     def __str__(self):
         return "%s" % self.title
 
-    @classmethod
-    def create_content_type(cls, content_type, **kwargs):
-        return create_content_type(cls, content_type, **kwargs)
-
-    def has_app_content(self):
-        if content_register.get_app_content(self):
-            return True
-        else:
-            return False
 
 Page.create_content_type(RichTextContent)
 Page.create_content_type(ImageContent)

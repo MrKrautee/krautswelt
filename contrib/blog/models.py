@@ -6,7 +6,9 @@ from django.utils.html import strip_tags, mark_safe
 from content_editor.models import create_plugin_base, Region
 
 from core.contents import create_content_type, content_register
-from core.contents.models import ImageContent, RichTextContent
+from core.contents.models import WithContents
+from core.contents.models import ImageContent
+from core.contents.models import RichTextContent
 
 try:
     from core.contents import app_reverse
@@ -70,7 +72,7 @@ class ArticleManager(models.Manager):
         return qs.dates('pub_date', 'month')
 
 
-class Article(models.Model):
+class Article(WithContents):
 
     title = models.CharField(_('title'), max_length=255)
     slug = models.SlugField(_('slug'), max_length=100, unique=True)
@@ -94,11 +96,7 @@ class Article(models.Model):
     objects = ArticleManager()
 
     def get_excerpt(self, word_count=350):
-        text_contents = content_register.get_contents(self,
-                                                      content_type=RichTextContent)
-        if text_contents.count():
-            return text_contents[0].excerpt(word_count=word_count)
-        return ''
+        return self.getFirstRichText().excerpt(word_count=word_count)
 
     def get_comments(self):
         qs = self.comment_set.filter(is_active=True)
@@ -108,13 +106,6 @@ class Article(models.Model):
     def get_comments_count(self):
         return self.get_comments().count()
 
-    def get_first_image(self):
-        img_contents = content_register.get_contents(self,
-                                                     content_type=ImageContent)
-        if img_contents.count():
-            return img_contents[0]
-        return ''
-
     def get_absolute_url(self):
         url = app_reverse('article_detail', args=(self.slug,))
         return url
@@ -123,8 +114,8 @@ class Article(models.Model):
         return "%s" % self.title[:20]
 
 
-create_content_type(Article, ImageContent)
-create_content_type(Article, RichTextContent)
+Article.create_content_type(ImageContent)
+Article.create_content_type(RichTextContent)
 
 class CommentManager(models.Manager):
 

@@ -39,7 +39,8 @@ def page_view(request, full_slug='/'):
         page = _dissolve(request, slugs)
     if not page:
         raise Http404Error(full_slug)
-    if not page.has_app_content():
+    app_ct = page.getAppContent()
+    if not app_ct:
         if page.get_absolute_url().strip('/') != full_slug.strip('/'):
             raise Http404Error(full_slug)
     return render_content(page, request, template_name="pages/page.html")
