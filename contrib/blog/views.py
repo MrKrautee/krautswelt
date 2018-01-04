@@ -6,7 +6,7 @@ from django.forms import ModelForm
 from django.forms import HiddenInput
 from django.views.generic import ListView
 from django.http import JsonResponse, HttpResponseNotAllowed
-from django.core.urlresolvers import reverse
+from django.urls import reverse
 from django.template.loader import render_to_string
 
 from core.contents.views import render_content_to_string

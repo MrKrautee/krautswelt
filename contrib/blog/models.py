@@ -135,7 +135,7 @@ class CommentManager(models.Manager):
 
 class Comment(models.Model):
 
-    parent = models.ForeignKey(Article)
+    parent = models.ForeignKey(Article, models.CASCADE)
 
     name = models.CharField(_('name'),
                             max_length=100,

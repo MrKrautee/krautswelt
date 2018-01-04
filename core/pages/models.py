@@ -51,7 +51,8 @@ class Page(MPTTModel, WithContents):
 
 
     parent = TreeForeignKey('self', null=True, blank=True,
-                            related_name='children', db_index=True)
+                            related_name='children', db_index=True,
+                            on_delete=models.CASCADE)
     ordering = models.IntegerField(default=0)
     regions = (
         Region(key='main', title=_('Main')),

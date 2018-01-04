@@ -1,6 +1,7 @@
 from functools import partial, reduce, update_wrapper
-from django.forms.widgets import Widget, ChoiceFieldRenderer, RadioChoiceInput
-from django.forms.widgets import RendererMixin, Select, ChoiceInput
+#from django.forms.widgets import Widget, ChoiceFieldRenderer, RadioChoiceInput
+from django.forms.widgets import  Select
+from django.forms.widgets import  RadioSelect
 from django.contrib import admin
 from django.conf.urls import url
 from django.utils.translation import ugettext_lazy as _
@@ -44,26 +45,26 @@ def mk_indented_title(instance):
         instance,
     )
 
-class PageChoiceInput(ChoiceInput):
-    input_type = 'radio'
-    def render(self, name=None, value=None, attrs=None):
-        if self.id_for_label:
-            label_for = format_html(' for="{}"', self.id_for_label)
-        else:
-            label_for = ''
-        attrs = dict(self.attrs, **attrs) if attrs else self.attrs
-        return format_html(
-            '<td>{}</td><td><label{}>{}</label></td>',
-            self.tag(attrs), label_for, self.choice_label
-        )
-
-class PageChoiceFieldRenderer(ChoiceFieldRenderer):
-    choice_input_class = PageChoiceInput
-    outer_html = '<table{id_attr}>{content}</table>'
-    inner_html = '<tr>{choice_value}{sub_widgets}</tr>'
-
-class PageSelectWidget(RendererMixin, Select):
-    renderer = PageChoiceFieldRenderer
+#class PageChoiceInput(ChoiceInput):
+#    input_type = 'radio'
+#    def render(self, name=None, value=None, attrs=None):
+#        if self.id_for_label:
+#            label_for = format_html(' for="{}"', self.id_for_label)
+#        else:
+#            label_for = ''
+#        attrs = dict(self.attrs, **attrs) if attrs else self.attrs
+#        return format_html(
+#            '<td>{}</td><td><label{}>{}</label></td>',
+#            self.tag(attrs), label_for, self.choice_label
+#        )
+#
+#class PageChoiceFieldRenderer(ChoiceFieldRenderer):
+#    choice_input_class = PageChoiceInput
+#    outer_html = '<table{id_attr}>{content}</table>'
+#    inner_html = '<tr>{choice_value}{sub_widgets}</tr>'
+#
+#class PageSelectWidget(RendererMixin, Select):
+#    renderer = PageChoiceFieldRenderer
 
 class PageMoveForm(forms.Form):
     POSITIONS = (
@@ -80,7 +81,7 @@ class PageMoveForm(forms.Form):
             (p.id, mk_indented_title(p))
                     for p in Page.objects.all()
         ]
-        self.fields['target'] = forms.ChoiceField(widget=PageSelectWidget(),
+        self.fields['target'] = forms.ChoiceField(widget=RadioSelect(),
                                                   choices=PAGE_TREE)
         self.fields['position'] = forms.ChoiceField(
             widget=forms.RadioSelect(),
