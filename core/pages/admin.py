@@ -118,8 +118,8 @@ class PageAdmin(ContentEditor):
             'fields': ('title', 'slug',)
         }),
         (_("publication"), {
-            'classes': ('collapse',),
-            'fields': ('pub_date', 'is_active', 'is_in_nav', 'create_date',
+            'classes': ('',),
+            'fields': ('pub_date', ('is_active', 'is_in_nav'), 'create_date',
                        'overwrite_url')
         }),
         (_("seo"), {
@@ -159,12 +159,33 @@ class PageAdmin(ContentEditor):
         action_del_navigation,
     )
     list_editable = ()
+    save_as = save_on_top = True
 
     class Media:
         css = dict(
             all=('/static/pages/css/page_tree.css',)
         )
         js = ('/static/admin/contents/js/RelatedLinksLookup.js',)
+
+    def change_form_tools(self, obj_id):
+        info = (
+            self.admin_site.name,
+            self.model._meta.app_label,
+            self.model._meta.model_name
+        )
+        links = (
+            (
+                _('Add Child'),
+                "%s?parent=%s" % (reverse("%s:%s_%s_add" % info), obj_id)
+            ),
+            (
+                _('Preview'),
+                reverse("%s:%s_%s_preview" % info, args=obj_id)
+            ),
+        )
+        return links
+
+
 
     def get_children(self, obj):
         return list(obj.get_children())
@@ -226,6 +247,13 @@ class PageAdmin(ContentEditor):
         return render_content(page, request)
 
 
+    def changeform_view(self, request, object_id=None, form_url='',
+                        extra_context=None):
+        extra = None
+        if object_id:
+            extra = dict(object_tools = self.change_form_tools(object_id))
+        return super(PageAdmin, self).changeform_view(request, object_id, form_url,
+                                               extra_context=extra)
 
     def get_urls(self):
         s_urls = super(PageAdmin, self).get_urls()
