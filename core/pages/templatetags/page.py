@@ -7,7 +7,7 @@ register = template.Library()
 @register.inclusion_tag('pages/sub_pages_navigation.html', takes_context=False)
 def full_sub_navigation(current_page):
     root = current_page.get_root()
-    if not root.get_children():
+    if not root.get_children().filter(**PageManager.active_filter):
         return dict(sub_pages = [], sub_pages_html = '')
     full_tree = root.get_descendants(include_self=True)
     full_tree = full_tree.filter(**PageManager.active_filter)
