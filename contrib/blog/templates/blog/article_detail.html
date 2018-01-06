@@ -35,12 +35,25 @@
                 <div id='content' class="">
                     {{contents.main}}
                 </div>
+                <div id='related_articles' class="">
+                    {% if object.related_articles.all %}
+                    <hr />
+                    <h3>Related Articles</h3>
+                    <ul>
+                        {% for article in object.related_articles.all %}
+                        <li><a href="{{ article.get_absolute_url }}">
+                                {{ article.title }}</a></li>
+                        {% endfor %}
+                    </ul>
+
+                    {% endif %} 
+                </div>
 <hr>
                 <!-- Blog Comments -->
 
                 <!-- Comments Form -->
                 <div id="comments" class="">
-                    <!--h3>reactions</h3-->
+                    <h3>Reactions</h3>
                     <div class="alert alert-success" style="display:none;">
                     <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
                     comment saved. thank you for commenting! after approving your comment, it will be published.

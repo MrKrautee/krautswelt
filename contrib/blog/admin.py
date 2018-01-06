@@ -29,7 +29,7 @@ class ArticleAdmin(ContentEditor):
     list_filter = ('pub_date', 'create_date', 'is_active')
     ordering = ('title', 'pub_date', 'create_date')
     # filter_horizontal = ('related_entries', )
-    autocomplete_fields = ('related_entries', )
+    autocomplete_fields = ('related_articles', )
 
     def view_on_site(self, obj):
         return obj.get_absolute_url()

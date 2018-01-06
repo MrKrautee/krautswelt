@@ -82,13 +82,14 @@ class Article(WithContents):
     is_active = models.BooleanField(_('is active'), default=False)
 
     categories = models.ManyToManyField(Category, verbose_name=_('categories'),
-                                        related_name='blogentries',
+                                        related_name='articles',
                                         blank=True)
 
     # @TODO: related_entries
-    related_entries = models.ManyToManyField("self",
-                                             related_name=_('blogentries'),
-                                             blank=True)
+    related_articles = models.ManyToManyField("self",
+                                             related_name='articles',
+                                             blank=True,
+                                             verbose_name=_('related articles'))
 
     regions = (Region(key='main', title=_('Main')), )
 
