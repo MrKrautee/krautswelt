@@ -1,5 +1,4 @@
 from django.conf.urls import url
-from .views import article_detail
 from .views import article_archive
 from .views import comment_form_check
 from .views import ArticleListView
