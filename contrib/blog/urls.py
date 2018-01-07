@@ -6,6 +6,7 @@ from .views import ArticleListView
 from .views import ArticleMonthArchive
 from .views import ArticleDayArchive
 from .views import ArticleYearArchive
+from .views import ArticleDetail
 
 urlpatterns = [
     url(r'^comment/form/check/$', comment_form_check,
@@ -21,6 +22,6 @@ urlpatterns = [
     url(r'^archive/([0-9]{4})/([0-9]{1,2})/([0-9]{1,2})/$', ArticleDayArchive.as_view(),
         name='article_archive_day'),
 
-    url(r'^(?P<slug>[-\w]+)/$', article_detail,
+    url(r'^(?P<slug>[-\w]+)/$', ArticleDetail.as_view(),
         name='article_detail'),
 ]

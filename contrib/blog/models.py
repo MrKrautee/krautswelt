@@ -36,8 +36,11 @@ class ArticleManager(models.Manager):
         qs = super(ArticleManager, self).get_queryset()
         return qs
 
-    def get_active(self):
-        qs = self.filter(**self.active_filter)
+    def get_active(self, **kwargs):
+        qs = self
+        if kwargs:
+            qs = qs.filter(**kwargs)
+        qs = qs.filter(**self.active_filter)
         qs = qs.order_by('-pub_date')
         return qs
 
