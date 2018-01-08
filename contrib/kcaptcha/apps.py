@@ -2,4 +2,4 @@ from django.apps import AppConfig
 
 
 class KcaptchaConfig(AppConfig):
-    name = 'kcaptcha'
+    name = 'contrib.kcaptcha'

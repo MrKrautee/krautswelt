@@ -4,8 +4,6 @@
 {% block extrastyle %}{{ block.super }}
 {% endblock extrastyle %}
 {% block extrajs %}
-<script src={% static "/helpers/js/forms.js" %}></script>
-<script id="comment-js" src="{% static '/blog/js/comments.js' %}" data-url="{% app_url "comment_form_check" %}"></script>
 {% endblock extrajs %}
 
 {% block content %}

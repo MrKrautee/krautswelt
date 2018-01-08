@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'core.contents.apps.ContentsConfig',
     'core.pages.apps.PagesConfig',
     'contrib.blog.apps.BlogConfig',
+    'contrib.kcaptcha.apps.KcaptchaConfig',
     'django.contrib.admin',
     'mptt',
     'captcha',
