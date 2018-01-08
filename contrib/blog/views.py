@@ -19,6 +19,7 @@ from .models import ArticleManager
 from .models import Comment
 
 class CommentForm(CaptchaModelForm):
+    js_form_name = 'CommentKCaptcha'
     def __init__(self, *args, **kwargs):
         super(CommentForm, self).__init__(*args, **kwargs)
         self.fields['name'].widget.attrs['placeholder'] = _("name *")

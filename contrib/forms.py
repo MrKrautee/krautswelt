@@ -3,6 +3,7 @@ from django.utils.safestring import mark_safe
 
 class KModelForm(ModelForm):
     """ ModelForm with bootstrap css class(form-control) for fields """
+    js_form_name = None
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -12,10 +13,15 @@ class KModelForm(ModelForm):
 
     @property
     def js_config(self):
-        raise NotImplemented
+        raise NotImplemented("%s: property 'js_config' not implemented." %
+                             self.__class__.__name__)
 
     @property
     def js_data(self):
+        if not self.js_form_name:
+            raise NotImplemented("%s: static field 'js_from_name' not defined."
+                                % self.__class__.__name__)
+
         extra_js = "<script type='text/javascript'>var %s = { %s };</script>"
         js_data = []
         for name, value in self.js_config.items():
