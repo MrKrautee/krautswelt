@@ -26,22 +26,22 @@ class CommentForm(CaptchaModelForm):
         self.fields['website'].widget.attrs['placeholder'] = _("my.website.com *")
         self.fields['comment'].widget.attrs['placeholder'] = _("your comment ...")
         self.fields['comment'].widget.attrs['rows'] = 3
-    class Meta:
+    class Meta(CaptchaModelForm.Meta):
         model = Comment
         fields = ['name', 'email', 'website', 'comment', 'parent',
                   'notify_new_entry', 'notify_new_comment']
         widgets = {'parent': HiddenInput(), }
 
-    class Media:
+    class Media(CaptchaModelForm.Media):
         js = ('blog/js/comments.js',)
 
-    def ajax_config(self):
+    @property
+    def js_config(self):
         return dict(
             url = app_reverse('comment_form_check'),
-            model_form_div_id = 'div#comment_form',
-            captcha_form_div_id = 'div#comment_form_captcha',
+            model_form_selector = 'div#comment_form form',
+            captcha_form_selector = 'div#comment_form_captcha form',
         )
-
 
 class ArticleDetail(DetailView):
     context_object_name = "object"

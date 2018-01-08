@@ -1,7 +1,7 @@
 {% load i18n static %}
 <div id="comment_form" class="">
 	<form  method="POST">{% csrf_token %}
-		{% include "forms/form.html" with form=comment_form %}
+		{% include "krautswelt/forms/form.html" with form=comment_form %}
 		<div class="form-group">
 			<button type="submit" class="btn btn-default">{% trans "submit" %}</button>
 		</div>

@@ -140,12 +140,3 @@ function setUpAjaxForm(form_selector, url, options){
 	return AjaxForm
 }; // setUpAjaxForm
 
-function makeBootstrapForms(form_selector, captcha_form_selector){
-  // make bootstrap forms:
-  // .form-control needed for bootstrap forms 
-  $(form_selector+" :input, "+captcha_form_selector+" :input").each(function(){
-    if($(this).attr("type") != "submit" && $(this).attr("type") != "hidden"){
-      $(this).addClass("form-control");
-    }
-  });
-}
