@@ -9,11 +9,6 @@ $(document).ready(function() {
     // hide comment form.
     $('div#comments div#comment_form_panel').fadeOut('slow');
   };
-  setUpCaptchaForm(
-    CommentKCaptcha.url, // validation (ajax) url
-    CommentKCaptcha.model_form_selector, // model_from
-    CommentKCaptcha.captcha_form_selector, //captcha_form
-    fadeOutCommentForm // onSucess
-  );
+  initKCaptchaForm(fadeOutCommentForm);
 });
 

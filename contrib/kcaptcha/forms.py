@@ -8,9 +8,9 @@ from captcha.fields import CaptchaField
 
 class CaptchaModelForm(KModelForm):
     """ Model Form with ajax captcha """
-
+    js_form_name = 'KCaptcha'
     class Media(KModelForm.Media):
-        js = ('kcaptcha/js/captcha_form.js',)
+        js = ('kcaptcha/js/form.js',)
 
     class Meta(KModelForm.Meta):
         pass
@@ -23,7 +23,6 @@ def captcha_form_factory(model_form_cls, hide_model_form=True):
             hidden_widgets.update({field_name: HiddenInput()})
     class PlusCaptchaForm(ModelForm):
         captcha = CaptchaField(required=True)
-
         class Meta:
             model = meta.model
             fields = meta.fields

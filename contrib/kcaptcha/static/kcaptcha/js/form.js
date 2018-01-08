@@ -78,3 +78,12 @@ function setUpCaptchaForm(url, form_selector, captcha_form_selector, onSuccess){
     CommentForm = setUpAjaxForm(CommentForm);
     CaptchaForm = setUpAjaxForm(CaptchaForm);
 }
+
+function initKCaptchaForm(onSuccess){
+  setUpCaptchaForm(
+    KCaptcha.url,
+    KCaptcha.model_form_selector,
+    KCaptcha.captcha_form_selector,
+    onSuccess
+  );
+}
