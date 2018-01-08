@@ -8,7 +8,6 @@ from captcha.fields import CaptchaField
 
 class CaptchaModelForm(KModelForm):
     """ Model Form with ajax captcha """
-    js_form_name = 'Kcaptcha'
 
     class Media(KModelForm.Media):
         js = ('kcaptcha/js/captcha_form.js',)
