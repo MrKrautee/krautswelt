@@ -12,7 +12,7 @@ from core.contents.views import render_content_to_string
 from core.contents import app_reverse
 
 from contrib.kcaptcha.forms import captcha_form_factory
-from contrib.kcaptcha.views import captcha_ajax
+#from contrib.kcaptcha.views import captcha_ajax
 
 from .models import Article
 from .models import ArticleManager
@@ -32,9 +32,6 @@ class CommentForm(ModelForm):
                   'notify_new_entry', 'notify_new_comment']
         widgets = {'parent': HiddenInput(), }
 
-def comment_form_check(request):
-    form = CommentForm(request.POST)
-    return captcha_ajax(request, form)
 
 class ArticleDetail(DetailView):
     context_object_name = "object"

@@ -1,14 +1,16 @@
 from django.conf.urls import url
 from .views import article_archive
-from .views import comment_form_check
 from .views import ArticleListView
 from .views import ArticleMonthArchive
 from .views import ArticleDayArchive
 from .views import ArticleYearArchive
 from .views import ArticleDetail
+from .views import CommentForm
+from contrib.kcaptcha.views import SimpleCaptchaFromView
 
 urlpatterns = [
-    url(r'^comment/form/check/$', comment_form_check,
+    url(r'^comment/form/check/$',
+        SimpleCaptchaFromView.as_view(model_form_class=CommentForm),
         name='comment_form_check'),
     url(r'^$', ArticleListView.as_view(),
         name='article_list'),

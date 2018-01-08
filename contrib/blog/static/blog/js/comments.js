@@ -57,9 +57,7 @@ $(document).ready(function() {
             " img.captcha").popover('hide');
         }, 733);
       }
-
     }
-
   };
   var CommentForm = {
     selector: form_selector,

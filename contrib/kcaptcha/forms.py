@@ -4,7 +4,8 @@ from django.forms import HiddenInput
 from captcha.fields import CaptchaField
 
 def captcha_form_factory(model_form_cls, hide_model_form=True):
-    meta  = model_form_cls._meta
+    #meta  = model_form_cls._meta
+    meta  = model_form_cls.Meta
     hidden_widgets = { }
     if hide_model_form:
         for field_name in meta.fields:
