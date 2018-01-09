@@ -13,7 +13,7 @@ from .forms import captcha_form_factory
 
 # Create your views here.
 
-class SimpleCaptchaFromView(View):
+class SimpleCaptchaFormView(View):
     popover_template = 'kcaptcha/reload_popover.html'
     model_form_class = None
     get_captcha_key = CaptchaStore.generate_key

@@ -6,11 +6,11 @@ from .views import ArticleDayArchive
 from .views import ArticleYearArchive
 from .views import ArticleDetail
 from .views import CommentForm
-from contrib.kcaptcha.views import SimpleCaptchaFromView
+from contrib.kcaptcha.views import SimpleCaptchaFormView
 
 urlpatterns = [
     url(r'^comment/form/check/$',
-        SimpleCaptchaFromView.as_view(model_form_class=CommentForm),
+        SimpleCaptchaFormView.as_view(model_form_class=CommentForm),
         name='comment_form_check'),
     url(r'^$', ArticleListView.as_view(),
         name='article_list'),
