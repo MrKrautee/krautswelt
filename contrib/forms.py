@@ -20,11 +20,11 @@ class KModelForm(ModelForm):
         super().__init__(*args, **kwargs)
         #set css classes
         for name, field in self.fields.items():
-           old_css_class = field.widget.attrs.get('class', '')
-           if len(old_css_class)>0:
-               old_css_class +=' '
-           css_classes = ' '.join(self.css_field_classes)
-           field.widget.attrs['class'] = "%s%s" % (old_css_class, css_classes)
+            old_css_class = field.widget.attrs.get('class', '')
+            if len(old_css_class)>0:
+                old_css_class +=' '
+            css_classes = ' '.join(self.css_field_classes)
+            field.widget.attrs['class'] = "%s%s" % (old_css_class, css_classes)
 
     @property
     def js_config(self):
@@ -37,8 +37,7 @@ class KModelForm(ModelForm):
                     MyFormWithFoo.my_js_var
 
         """
-        raise NotImplemented("%s: property 'js_config' not implemented." %
-                             self.__class__.__name__)
+        return dict()
 
     @property
     def js_data(self):
@@ -52,15 +51,16 @@ class KModelForm(ModelForm):
                 used in krautswelt/forms/form.html  {{ form.js_data }}
 
         """
-        if not self.js_form_name:
-            raise NotImplemented("%s: static field 'js_from_name' not defined."
-                                % self.__class__.__name__)
-        extra_js = "<script type='text/javascript'>var %s = { %s };</script>"
-        js_data = []
-        for name, value in self.js_config.items():
-            js_data.append("%s:'%s'," % (name, value))
-        js_output = extra_js % (self.js_form_name, '\n'.join(js_data))
-        return mark_safe(js_output)
+        if len(self.js_config):
+            if not self.js_form_name:
+                raise NotImplemented("%s: static field 'js_from_name' not defined."
+                                    % self.__class__.__name__)
+            extra_js = "<script type='text/javascript'>var %s = { %s };</script>"
+            js_data = []
+            for name, value in self.js_config.items():
+                js_data.append("%s:'%s'," % (name, value))
+            js_output = extra_js % (self.js_form_name, '\n'.join(js_data))
+            return mark_safe(js_output)
 
     class Meta:
         pass
