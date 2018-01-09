@@ -1,8 +1,0 @@
-Django==1.10.6
-django-debug-toolbar
-Pillow
-django-ckeditor==5.2.1
-django-versatileimagefield
-pip
-django-simple-captcha
-django-mptt
