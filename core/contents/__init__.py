@@ -131,7 +131,7 @@ def _app_reverse_model(model_cls, view_name, args=None, kwargs=None,
                 urls_conf = app_content.urls_conf
                 url = reverse(view_name, urlconf=urls_conf, args=args,
                               kwargs=kwargs)
-            except Exception as e:
+            except NoReverseMatch as e:
                 print(e)
                 pass
             if url:

@@ -1,23 +1,27 @@
-from functools import partial, reduce, update_wrapper
-from django.forms.widgets import Widget, ChoiceFieldRenderer, RadioChoiceInput
-from django.forms.widgets import RendererMixin, Select, ChoiceInput
+from functools import partial
+from functools import update_wrapper
+from functools import reduce
+
 from django.contrib import admin
 from django.conf.urls import url
+from django.urls import reverse
 from django.utils.translation import ugettext_lazy as _
 from django.utils.html import mark_safe
 from django.utils.html import format_html
-from django.urls import reverse
-
-from django import forms
 from django.template.response import TemplateResponse
-from mptt.admin import MPTTModelAdmin
-from mptt.admin import DraggableMPTTAdmin
+from django.forms.widgets import  RadioSelect
+from django.forms.widgets import HiddenInput
+from django.forms import ChoiceField
+from django.forms import IntegerField
+from django.forms import Form
 
 from content_editor.admin import ContentEditor
+
 from core.contents.admin import create_inlines
+from core.contents.views import render_content
+
 from .models import Page
 
-#content_inlines = create_inlines(Page)
 def mk_indented_title(instance):
     box_drawing = []
     ancestors = instance.get_ancestors()
@@ -43,35 +47,18 @@ def mk_indented_title(instance):
         instance,
     )
 
-class PageChoiceInput(ChoiceInput):
-    input_type = 'radio'
-    def render(self, name=None, value=None, attrs=None):
-        if self.id_for_label:
-            label_for = format_html(' for="{}"', self.id_for_label)
-        else:
-            label_for = ''
-        attrs = dict(self.attrs, **attrs) if attrs else self.attrs
-        return format_html(
-            '<td>{}</td><td><label{}>{}</label></td>',
-            self.tag(attrs), label_for, self.choice_label
-        )
+class PageRadioSelect(RadioSelect):
+    template_name = 'pages/forms/widgets/page_radio.html'
+    option_template_name = 'pages/forms/widgets/page_radio_option.html'
 
-class PageChoiceFieldRenderer(ChoiceFieldRenderer):
-    choice_input_class = PageChoiceInput
-    outer_html = '<table{id_attr}>{content}</table>'
-    inner_html = '<tr>{choice_value}{sub_widgets}</tr>'
-
-class PageSelectWidget(RendererMixin, Select):
-    renderer = PageChoiceFieldRenderer
-
-class PageMoveForm(forms.Form):
+class PageMoveForm(Form):
     POSITIONS = (
         ('first-child', _('first child')),
         ('last-child', _('last child')),
         ('left', _('before')),
         ('right', _('after')),
     )
-    page_id = forms.IntegerField(widget=forms.HiddenInput())
+    page_id = IntegerField(widget=HiddenInput())
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -79,10 +66,10 @@ class PageMoveForm(forms.Form):
             (p.id, mk_indented_title(p))
                     for p in Page.objects.all()
         ]
-        self.fields['target'] = forms.ChoiceField(widget=PageSelectWidget(),
+        self.fields['target'] = ChoiceField(widget=PageRadioSelect(),
                                                   choices=PAGE_TREE)
-        self.fields['position'] = forms.ChoiceField(
-            widget=forms.RadioSelect(),
+        self.fields['position'] = ChoiceField(
+            widget=RadioSelect(),
             choices=PageMoveForm.POSITIONS
         )
 
@@ -111,14 +98,13 @@ def action_del_navigation(modeladmin, request, qs):
 action_del_navigation.short_description = _("remove in navigation")
 
 class PageAdmin(ContentEditor):
-
     fieldsets = (
         (None, {
             'fields': ('title', 'slug',)
         }),
         (_("publication"), {
-            'classes': ('collapse',),
-            'fields': ('pub_date', 'is_active', 'is_in_nav', 'create_date',
+            'classes': ('',),
+            'fields': ('pub_date', ('is_active', 'is_in_nav'), 'create_date',
                        'overwrite_url')
         }),
         (_("seo"), {
@@ -158,12 +144,33 @@ class PageAdmin(ContentEditor):
         action_del_navigation,
     )
     list_editable = ()
+    save_as = save_on_top = True
 
     class Media:
         css = dict(
             all=('/static/pages/css/page_tree.css',)
         )
-        js = ('/static/admin/contents/js/RelatedLinksLookup.js',)
+        js = (
+            '/static/admin/contents/js/RelatedLinksLookup.js',
+            '/static/admin/contents/js/load_ckeditor_fix.js',
+        )
+
+    def change_form_tools(self, obj_id):
+        info = (
+            self.admin_site.name,
+            self.model._meta.app_label,
+            self.model._meta.model_name
+        )
+        links = (
+            (_('Add Child'),
+                "%s?parent=%s" % (reverse("%s:%s_%s_add" % info), obj_id)),
+            (_('Preview'),
+                reverse("%s:%s_%s_preview" % info, args=obj_id)),
+            (_('Move'), reverse("%s:%s_%s_move" % info, args=(obj_id,))),
+        )
+        return links
+
+
 
     def get_children(self, obj):
         return list(obj.get_children())
@@ -176,14 +183,10 @@ class PageAdmin(ContentEditor):
             self.model._meta.model_name
         )
         urls = [
-            (
-                reverse("%s:%s_%s_move" % info, args=(obj.id,)),
-                _('move')
-            ),
-            (
-                "%s?parent=%d" % (reverse("%s:%s_%s_add" % info), obj.id),
-                _('+child')
-            )
+            (reverse("%s:%s_%s_move" % info, args=(obj.id,)),
+                _('Move')),
+            ("%s?parent=%d" % (reverse("%s:%s_%s_add" % info), obj.id),
+                _('+Child')),
         ]
         url_format = "<a href='%s'>%s</a>"
         urls_html = [ url_format % u for u in urls ]
@@ -200,14 +203,14 @@ class PageAdmin(ContentEditor):
     def move_view(self, request, page_id, extra_context=None):
         opts = self.model._meta
         app_label = opts.app_label
-        page = Page.objects.get(id=page_id)
+        page = self.model.objects.get(id=page_id)
         if request.POST: # form submit
             form = PageMoveForm(data=request.POST)
             if form.is_valid():
                 cd = form.cleaned_data
                 position = cd['position']
                 target_id = cd['target']
-                target = Page.objects.get(id=target_id)
+                target = self.model.objects.get(id=target_id)
                 page.move_to(target, position)
                 return self.changelist_view(request, extra_context)
         else:
@@ -220,6 +223,19 @@ class PageAdmin(ContentEditor):
         return TemplateResponse(request, "admin/%s/%s/move_page.html" %
                                 (app_label, opts.model_name), context)
 
+    def preview_view(self, request, page_id):
+        page = self.model.objects.get(id=page_id)
+        return render_content(page, request)
+
+
+    def changeform_view(self, request, object_id=None, form_url='',
+                        extra_context=None):
+        extra = None
+        if object_id:
+            extra = dict(object_tools = self.change_form_tools(object_id))
+        return super().changeform_view(request, object_id, form_url,
+                                               extra_context=extra)
+
     def get_urls(self):
         s_urls = super(PageAdmin, self).get_urls()
         info = self.model._meta.app_label, self.model._meta.model_name
@@ -231,7 +247,10 @@ class PageAdmin(ContentEditor):
         urlpatterns = [
             url(r'^(.+)/move/$', wrap(self.move_view),
                 name="%s_%s_move" % info),
+            url(r'^(.+)/preview/$', wrap(self.preview_view),
+                name="%s_%s_preview" % info),
         ]
         urls_merged = urlpatterns + s_urls
         return urls_merged
 admin.site.register(Page, PageAdmin)
+

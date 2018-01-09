@@ -19,6 +19,10 @@ def render_content_to_string(request, parent_object, contents_cls_list=None):
 
 def render_content(model, request, template_name=None):
     app_content = content_register.get_app_content(model)
+    opts = model._meta
+    template_name = template_name or "%s/%s.html" % (opts.app_label,
+                                                     opts.model_name)
+
     if app_content:
         return app_content.render(request)
     contents = render_content_to_string(request, model)

@@ -9,6 +9,9 @@ from django.utils.html import strip_tags
 from django.utils.html import mark_safe
 from django.template.loader import render_to_string
 
+from core.contents import create_content_type
+from core.contents import content_register
+
 from ckeditor.fields import RichTextField
 from versatileimagefield.fields import PPOIField, VersatileImageField
 
@@ -118,5 +121,40 @@ class ApplicationContent(models.Model):
         fn, args, kwargs = resolve("/%s"%app_path, self.urls_conf)
         #kwargs['extra_context'] =  dict(page = cnt_info.parent)
         return fn(request, *args, **kwargs)
+
+
+class WithContents(models.Model):
+    class Meta:
+        abstract = True
+
+    def get_absolute_url(self):
+        raise NotImplementedError("%s: needs a get_absolute_url method" %
+                                  self.__class__.__name__)
+
+    @classmethod
+    def create_content_type(cls, content_type, **kwargs):
+        return create_content_type(cls, content_type, **kwargs)
+
+    def getAppContent(self):
+        return content_register.get_app_content(self)
+
+    def getContents(self, content_type=None):
+        return content_register.get_contents(self, content_type=content_type)
+
+    def getContentTypes(self):
+        return content_register.get_ctypes(model_cls=self.__class__)
+
+    def getFirstImage(self):
+        return self._getFirst(ImageContent)
+
+    def getFirstRichText(self):
+        return self._getFirst(RichTextContent)
+
+    def _getFirst(self, content_type):
+        contents = content_register.get_contents(self,
+                                                     content_type=content_type)
+        if contents.count():
+            return contents[0]
+        return None
 
 

@@ -5,8 +5,9 @@ from django.utils.html import strip_tags, mark_safe
 
 from content_editor.models import create_plugin_base, Region
 
-from core.contents import create_content_type, content_register
-from core.contents.models import ImageContent, RichTextContent
+from core.contents.models import WithContents
+from core.contents.models import ImageContent
+from core.contents.models import RichTextContent
 
 try:
     from core.contents import app_reverse
@@ -24,16 +25,22 @@ class Category(models.Model):
         return self.name
 
 
-class BlogEntryManager(models.Manager):
+class ArticleManager(models.Manager):
+
+    active_filter = dict (
+                        is_active=True,
+                        pub_date__lte=timezone.now(),
+                         )
 
     def get_queryset(self):
-        qs = super(BlogEntryManager, self).get_queryset()
+        qs = super(ArticleManager, self).get_queryset()
         return qs
 
-    def get_active(self):
-        qs = self.filter(is_active=True)
-        # @TODO: BUG ???
-        qs = qs.filter(pub_date__lte=timezone.now())
+    def get_active(self, **kwargs):
+        qs = self
+        if kwargs:
+            qs = qs.filter(**kwargs)
+        qs = qs.filter(**self.active_filter)
         qs = qs.order_by('-pub_date')
         return qs
 
@@ -67,7 +74,7 @@ class BlogEntryManager(models.Manager):
         return qs.dates('pub_date', 'month')
 
 
-class BlogEntry(models.Model):
+class Article(WithContents):
 
     title = models.CharField(_('title'), max_length=255)
     slug = models.SlugField(_('slug'), max_length=100, unique=True)
@@ -78,24 +85,21 @@ class BlogEntry(models.Model):
     is_active = models.BooleanField(_('is active'), default=False)
 
     categories = models.ManyToManyField(Category, verbose_name=_('categories'),
-                                        related_name='blogentries',
+                                        related_name='articles',
                                         blank=True)
 
     # @TODO: related_entries
-    related_entries = models.ManyToManyField("self",
-                                             related_name=_('blogentries'),
-                                             blank=True)
+    related_articles = models.ManyToManyField("self",
+                                             related_name='articles',
+                                             blank=True,
+                                             verbose_name=_('related articles'))
 
     regions = (Region(key='main', title=_('Main')), )
 
-    objects = BlogEntryManager()
+    objects = ArticleManager()
 
     def get_excerpt(self, word_count=350):
-        text_contents = content_register.get_contents(self,
-                                                      content_type=RichTextContent)
-        if text_contents.count():
-            return text_contents[0].excerpt(word_count=word_count)
-        return ''
+        return self.getFirstRichText().excerpt(word_count=word_count)
 
     def get_comments(self):
         qs = self.comment_set.filter(is_active=True)
@@ -105,23 +109,16 @@ class BlogEntry(models.Model):
     def get_comments_count(self):
         return self.get_comments().count()
 
-    def get_first_image(self):
-        img_contents = content_register.get_contents(self,
-                                                     content_type=ImageContent)
-        if img_contents.count():
-            return img_contents[0]
-        return ''
-
     def get_absolute_url(self):
-        url = app_reverse('entry_detail', args=(self.slug,))
+        url = app_reverse('article_detail', args=(self.slug,))
         return url
 
     def __str__(self):
         return "%s" % self.title[:20]
 
 
-create_content_type(BlogEntry, ImageContent)
-create_content_type(BlogEntry, RichTextContent)
+Article.create_content_type(ImageContent)
+Article.create_content_type(RichTextContent)
 
 class CommentManager(models.Manager):
 
@@ -142,7 +139,7 @@ class CommentManager(models.Manager):
 
 class Comment(models.Model):
 
-    parent = models.ForeignKey(BlogEntry)
+    parent = models.ForeignKey(Article, models.CASCADE)
 
     name = models.CharField(_('name'),
                             max_length=100,
@@ -156,9 +153,11 @@ class Comment(models.Model):
                                 editable=False)
 
     is_active = models.BooleanField(_('id active'), default=False)
-    notify_new_comment = models.BooleanField(_('notify me for new comments'),
+    notify_new_comment = models.BooleanField(_('notify  new comments'),
+                                             help_text=_('notify me for new comments'),
                                              default=False)
-    notify_new_entry = models.BooleanField(_('notify me for new blog entries'),
+    notify_new_entry = models.BooleanField(_('notify new blog entries'),
+                                           help_text=_('notify me for new entries'),
                                            default=False)
     objects = CommentManager()
 

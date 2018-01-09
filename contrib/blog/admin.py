@@ -1,13 +1,14 @@
 from django.contrib.admin import ModelAdmin, site
 from django.utils.translation import ugettext_lazy as _
+from django.utils.html import mark_safe
 from django.urls import reverse
 
 from content_editor.admin import ContentEditor
 from core.contents.admin import create_inlines
 
-from .models import BlogEntry, Category, Comment
+from .models import Article, Category, Comment
 
-blog_content_inlines = create_inlines(BlogEntry)
+blog_content_inlines = create_inlines(Article)
 class CategoryAdmin(ModelAdmin):
     prepopulated_fields = {"slug": ("name",)}
     list_display = ('name', 'slug', )
@@ -15,7 +16,7 @@ class CategoryAdmin(ModelAdmin):
     ordering = ('name', 'slug', )
 
 
-class BlogEntryAdmin(ContentEditor):
+class ArticleAdmin(ContentEditor):
 
     inlines = blog_content_inlines # [ImageInline, RichTextInline, ]
     readonly_fields = ('create_date', )
@@ -27,7 +28,8 @@ class BlogEntryAdmin(ContentEditor):
     search_fields = ('title', 'pub_date')
     list_filter = ('pub_date', 'create_date', 'is_active')
     ordering = ('title', 'pub_date', 'create_date')
-    filter_horizontal = ('related_entries', )
+    # filter_horizontal = ('related_entries', )
+    autocomplete_fields = ('related_articles', )
 
     def view_on_site(self, obj):
         return obj.get_absolute_url()
@@ -40,7 +42,27 @@ class CommentAdmin(ModelAdmin):
     list_filter = ('is_active', )
     list_display = ('name', 'email', 'comment_excerpt', 'website', 'date', )
     actions = ( approve_comment, )
+    readonly_fields = ('comment', 'name', 'email', 'website', 'date',
+                       'notify_new_entry', 'notify_new_comment', 'parent_link')
 
+    fieldsets = (
+        (None, {
+            'fields': ('is_active', 'parent_link'),
+        }),
+        (_("Comment"), {
+            'fields': ('date', 'name', 'email', 'website', 'comment'),
+        }),
+        (None, {
+            'fields': ('notify_new_entry', 'notify_new_comment'),
+        }),
+    )
+
+    def parent_link(self, obj):
+        # @TODO: article preview
+        parent = obj.parent
+        return mark_safe('<a href="%s">%s</a> (id: %s)' % (parent.get_absolute_url(),
+                                                 parent.title, parent.id))
+    parent_link.short_description=_('article')
 # in case that krautswelt is installed.
 # indicate new comments to approve, in admin index.
 try:
@@ -63,5 +85,5 @@ except:
     pass
 
 site.register(Category, CategoryAdmin)
-site.register(BlogEntry, BlogEntryAdmin)
+site.register(Article, ArticleAdmin)
 site.register(Comment, CommentAdmin)

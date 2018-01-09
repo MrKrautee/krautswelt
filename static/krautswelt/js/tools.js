@@ -24,14 +24,3 @@
 		return getCookie('csrftoken');
 	}
 	
-	/**
-     * make input types to a bootstrap form control.
-     */
-	function makeBootstrapFom(){
-        $("form :input").each(function(){
-            if($(this).attr("type") != "submit"){
-                $(this).addClass("form-control");
-            }
-        });
-    
-    }

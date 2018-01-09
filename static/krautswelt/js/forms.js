@@ -138,4 +138,5 @@ function setUpAjaxForm(form_selector, url, options){
 	$.extend(AjaxForm, options);
 	AjaxForm.setItUp();
 	return AjaxForm
-} // setUpAjaxForm
+}; // setUpAjaxForm
+

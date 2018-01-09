@@ -1,9 +1,10 @@
-Django==1.10.6
+Django
 django-debug-toolbar
 Pillow
-django-ckeditor==5.2.1
+django-ckeditor
 django-versatileimagefield
 pip
 django-simple-captcha
 django-mptt
-django-content-editor==1.0.0
+django-content-editor
+pytz
