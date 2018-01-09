@@ -1,0 +1,8 @@
+{
+	"name": "krautswelt",
+	"version": "dev",
+	"dependencies": [
+		"django-content-editor": "*",
+		"django": ">=2.0"
+	]
+}
