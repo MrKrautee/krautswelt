@@ -150,7 +150,10 @@ class PageAdmin(ContentEditor):
         css = dict(
             all=('/static/pages/css/page_tree.css',)
         )
-        js = ('/static/admin/contents/js/RelatedLinksLookup.js',)
+        js = (
+            '/static/admin/contents/js/RelatedLinksLookup.js',
+            '/static/admin/contents/js/load_ckeditor_fix.js',
+        )
 
     def change_form_tools(self, obj_id):
         info = (
