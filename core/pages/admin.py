@@ -104,8 +104,8 @@ class PageAdmin(ContentEditor):
         }),
         (_("publication"), {
             'classes': ('',),
-            'fields': ('pub_date', ('is_active', 'is_in_nav'), 'create_date',
-                       'overwrite_url')
+            'fields': (('pub_date', 'create_date'),('is_active', 'is_in_nav'),
+                       'overwrite_url', 'template')
         }),
         (_("seo"), {
             'classes': ('collapse',),

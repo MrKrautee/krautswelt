@@ -109,7 +109,8 @@ class RichTextContent(models.Model):
 class ApplicationContent(models.Model):
     @classmethod
     def init(cls, apps = ()):
-        choices = [ (k, v) for k, v in apps ]
+        # choices = [ (k, v) for k, v in apps ]
+        choices = apps
         cls.add_to_class('urls_conf', models.CharField(max_length=100,
                                                        choices=choices))
 
