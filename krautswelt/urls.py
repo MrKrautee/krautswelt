@@ -19,11 +19,19 @@ from django.conf import settings
 from django.conf.urls import include, url
 from django.conf.urls.static import static
 
+from rest_framework.routers import DefaultRouter
+# REST Api Views
+from contrib.blog.views import ArticleViewSet
+router = DefaultRouter()
+router.register(r'articles', ArticleViewSet)
+
 media_urls = static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 static_urls = static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
 urlpatterns = [
     url(r'^captcha/', include('captcha.urls')),
     url(r'^admin/', include('contrib.kadmin.urls')),
+    url(r'^api-auth/', include('rest_framework.urls')),
+    url(r'^rest/', include(router.urls)),
     url('', include('core.pages.urls')),
 ]
 

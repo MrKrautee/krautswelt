@@ -8,15 +8,22 @@ from django.views.generic import ListView
 from django.views.generic import DetailView
 from django.urls import reverse
 
+from rest_framework.viewsets import ModelViewSet
+
 from core.contents.views import render_content_to_string
 from core.contents import app_reverse
-
 from contrib.kcaptcha.forms import captcha_form_factory
 from contrib.kcaptcha.forms import CaptchaModelForm
 
 from .models import Article
 from .models import ArticleManager
 from .models import Comment
+from .serializers import ArticleSerializer
+
+class ArticleViewSet(ModelViewSet):
+    queryset = Article.objects.get_active().all()
+    serializer_class = ArticleSerializer
+    lookup_field = 'slug'
 
 class CommentForm(CaptchaModelForm):
     def __init__(self, *args, **kwargs):

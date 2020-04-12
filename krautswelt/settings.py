@@ -29,7 +29,7 @@ INTERNAL_IPS = ('127.0.0.1',)
 
 
 #ALLOWED_HOSTS = ['192.168.178.80', ]
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['local.krautswelt',]
 
 MEDIA_ROOT = '%s/media' % BASE_DIR
 MEDIA_URL = '/media/'
@@ -38,11 +38,11 @@ MEDIA_URL = '/media/'
 
 INSTALLED_APPS = [
     # 'contrib.admin.apps.AdminConfig',
-    'contrib.user.apps.UserConfig',
     'app_settings.apps.AppSettingsConfig',
     'advanced_admin.apps.AdvancedAdminConfig',
     'core.contents.apps.ContentsConfig',
     'core.pages.apps.PagesConfig',
+    'contrib.user.apps.UserConfig',
     'contrib.blog.apps.BlogConfig',
     'contrib.kcaptcha.apps.KcaptchaConfig',
     'django.contrib.admin',
@@ -51,6 +51,9 @@ INSTALLED_APPS = [
     'versatileimagefield',
     'ckeditor',
     'content_editor',
+    'rest_framework',
+    'corsheaders',
+    'webpack_loader',
     # 'debug_toolbar.apps.DebugToolbarConfig',
     #'krautswelt',
     'django.contrib.auth',
@@ -82,6 +85,8 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
+    'django.middleware.common.CommonMiddleware',
 ]
 
 ROOT_URLCONF = 'krautswelt.urls'
@@ -188,3 +193,20 @@ CKEDITOR_CONFIGS = {
         # for extraPlugins see the customConfig File
     }
 }
+
+REST_FRAMEWORK = {
+    # USe Django's standard `django.contrib.auth` permissions,
+    # or allow read-only access for anauthenticated users.
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.DjangoModelPermissionsOrAnonReadOnly',
+    ]
+}
+
+CORS_ORIGIN_WHITELIST = (
+    'localhost:8888',
+    'localhost:8000',
+    'local.krautswelt:8000',
+    '127.0.0.1:3000'
+    'localhost:3000'
+)
+CORS_ORIGIN_ALLOW_ALL = True

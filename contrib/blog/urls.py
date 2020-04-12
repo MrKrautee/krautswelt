@@ -1,4 +1,7 @@
-from django.conf.urls import url
+from django.conf.urls import url, include
+from contrib.kcaptcha.views import SimpleCaptchaFormView
+
+# HTML Views
 from .views import article_archive
 from .views import ArticleListView
 from .views import ArticleMonthArchive
@@ -6,7 +9,10 @@ from .views import ArticleDayArchive
 from .views import ArticleYearArchive
 from .views import ArticleDetail
 from .views import CommentForm
-from contrib.kcaptcha.views import SimpleCaptchaFormView
+
+
+
+
 
 urlpatterns = [
     url(r'^comment/form/check/$',

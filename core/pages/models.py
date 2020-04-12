@@ -28,11 +28,11 @@ class PageManager(TreeManager):
         is_active = True,
         pub_date__lte = timezone.now(),
     )
-
-    def get_nav_pages(self):
+    def get_navigation(self):
         fil = dict(is_in_nav=True)
         fil.update(self.active_filter)
         return self.filter(**fil)
+    get_nav_pages = get_navigation
 
     def get_active(self):
         qs = self.filter(**self.active_filter)

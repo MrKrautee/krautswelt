@@ -98,11 +98,27 @@ class Article(WithContents):
 
     objects = ArticleManager()
 
-    def get_excerpt(self, word_count=350):
-        return self.getFirstRichText().excerpt(word_count=word_count)
+    def excerpt(self, word_count=35):
+        text_content = self.getFirstRichText()
+        if text_content:
+            return text_content.excerpt(word_count=word_count)
+        return ""
+    get_excerpt = excerpt
+    def image(self):
+        img_content = self.getFirstImage()
+        if img_content:
+            return img_content.image.url
+        return ''
+
+    def thumbnail(self):
+        img_content = self.getFirstImage()
+        if img_content:
+            img_sized = img_content.image.crop['328x182']
+            return img_sized.url
+        return ''
 
     def get_comments(self):
-        qs = self.comment_set.filter(is_active=True)
+        qs = self.comments.filter(is_active=True)
         qs = qs.order_by('-pub_date')
         return qs
 
@@ -139,7 +155,7 @@ class CommentManager(models.Manager):
 
 class Comment(models.Model):
 
-    parent = models.ForeignKey(Article, models.CASCADE)
+    parent = models.ForeignKey(Article, models.CASCADE, related_name="comments")
 
     name = models.CharField(_('name'),
                             max_length=100,
